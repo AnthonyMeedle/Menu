@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="menu.add.no" path="/admin/modules/menu/add"  methods="get">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::noAction</default>
+    </route>
+    <route id="menu.add" path="/admin/modules/menu/add" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::addAction</default>
+    </route>
+    
+    <route id="menu.delete.no" path="/admin/modules/menu/delete"  methods="get">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::noAction</default>
+    </route>
+    <route id="menu.delete" path="/admin/modules/menu/delete" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::deleteAction</default>
+    </route>
+    
+	<route id="menu.admin.details" path="/admin/modules/menu/details/{menu_id}" methods="get">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::detailAction</default>
+        <requirement key="menu_id">\d+</requirement>
+    </route>
+	<route id="menu.admin.item" path="/admin/modules/menu/details/{menu_id}" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::detailUpdateAction</default>
+        <requirement key="menu_id">\d+</requirement>
+    </route>
+    
+    <!--
+
+    if a /admin/module/menu/ route is provided, a "Configuration" button will be displayed
+    for the module in the module list. Clicking this button will invoke this route.
+
+    <route id="my_route_id" path="/admin/module/menu">
+        <default key="_controller">Menu\Full\Class\Name\Of\YourConfigurationController::methodName</default>
+    </route>
+
+    <route id="my_route_id" path="/admin/module/menu/route-name">
+        <default key="_controller">Menu\Full\Class\Name\Of\YourAdminController::methodName</default>
+    </route>
+
+    <route id="my_route_id" path="/my/route/name">
+        <default key="_controller">Menu\Full\Class\Name\Of\YourOtherController::methodName</default>
+    </route>
+
+    ...add as many routes as required.
+
+    <route>
+    ...
+    </route>
+    -->
+
+    <route id="menu.adminTemplate" path="/admin/modules/menu/{template}">
+        <default key="_controller">Thelia\Controller\Admin\AdminController::processTemplateAction</default>
+        <requirement key="template">.*</requirement>
+    </route>
+   
+
+</routes>

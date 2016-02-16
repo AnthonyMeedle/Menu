@@ -1,0 +1,611 @@
+{extends file="layout.tpl"}
+
+{* Body Class *}
+{block name="body-class"}page-home{/block}
+
+{* Page Title *}
+{block name='no-return-functions' append}
+    {$page_title = {config key="store_name"}}
+{/block}
+
+{* Hide breadcrumb *}
+{block name='breadcrumb'}{/block}
+
+{* Main content *}
+{block name="main-content"}
+    {hook name="home.body"}
+	<!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand topnav" href="#">Résumé</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#about">Photos</a>
+                    </li>
+                    <li>
+                        <a href="#services">Descriptif</a>
+                    </li>
+                    <li>
+                        <a href="#contact">Avis</a>
+                    </li>
+                    <li>
+                        <a href="#contact">Situation</a>
+                    </li>
+                    <li>
+                        <a href="#contact">Prix</a>
+                    </li>
+                    <li>
+                        <a href="#contact">Equipements</a>
+                    </li>
+                    <li>
+                        <a href="#contact">Contact</a>
+                    </li>                    
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+
+	{assign var="moisDebut" value={$smarty.get.moisdebut|default:{$smarty.now|date_format:"%m"}}}
+	{assign var="anneeDebut" value={$smarty.get.anneedebut|default:{$smarty.now|date_format:"%Y"}}}
+	 {loop name="product.details" type="product" id=$product_id limit="1" with_prev_next_info="1" with_prev_next_visible="1"}
+
+
+	<a  name="services"></a>
+    <div class="content-section-a">
+        <div class="container"> 
+	        <div class="calendrier_meedle" >
+    		    <div class="row">
+			        <div class="col-lg-12 col-sm-12">
+			            <div class="controls">
+				            <a class="pull-left" data-go="prev"><div class="btn btn-primary">Prev</div></a>
+				            <h4 data-mois="{$moisDebut}" data-annee="{$anneeDebut}" id="titleCalendar">Calendrier de réservation du samedi au samedi</h4>
+				            <a class="pull-right" data-go="next"><div class="btn btn-primary">Next</div></a>
+				        </div>
+				    </div>
+				    <div id="calendarListMonth">
+		        	{loop type="calendar" name="resa" number_calendar="4" month="{$moisDebut}" years="{$anneeDebut}"}
+					<div class="col-lg-3 col-sm-3" data-mois="{$NUM_CALENDAR}">
+						<h4><span data-head-month>{$NAME_MONTH}</span> <span data-head-year>{$YEARS}</span></h4>
+						<div class="day-headers">
+							<div class="dayEntete header">Lun</div>
+							<div class="dayEntete header">Mar</div>
+							<div class="dayEntete header">Mer</div>
+							<div class="dayEntete header">Jeu</div>
+							<div class="dayEntete header">Ven</div>
+							<div class="dayEntete header">Sam</div>
+							<div class="dayEntete header">Dim</div>
+						</div>
+						<div class="days" data-group="days" >
+							{loop type="calendardays" name="lesJours" month="{$MONTH}" years="{$YEARS}"}
+								<div class="day {$NAME_DAY_SHORT} {$MOMENT} {$ENCOURS} {if $DISPO === ''}dayDispo{else}dayBloque{$DISPO}{/if}" data-instant="{$YEARS}{$MONTH}{$DAY}">
+									<a data-year="{$YEARS}" data-month="{$MONTH}" data-day="{$DAY}">{$DAY}</a>
+								</div>
+							{/loop}				
+						</div>
+					</div>
+		        	{/loop}
+		        	</div>
+		        	<p id="dateChoix"></p>
+	
+		        	{form name="thelia.cart.add" }
+	                <form id="form-product-details" action="{url path="/cart/add" }" method="post" class="form-product">
+                    {form_hidden_fields}
+                    <input type="hidden" name="view" value="index">
+                    <input type="hidden" name="product_id" value="{$ID}">
+                    {form_field field="append"}
+                        <input type="hidden" name="{$name}" value="1">
+                    {/form_field}
+
+                    {form_field field="product"}
+                        <input id="{$label_attr.for}" type="hidden" name="{$name}" value="{$ID}" {$attr} >
+                    {/form_field}
+
+                    {* pse *}
+                    {form_field field='product_sale_elements_id'}
+                    <input id="pse-id" class="pse-id" type="text" name="{$name}" value="{$PRODUCT_SALE_ELEMENT}" {$attr} >
+                    {/form_field}
+
+
+                        {form_field field='quantity'}
+                            <input type="number" name="{$name}" id="{$label_attr.for}" value="{$value|default:1}" min="1" required>
+                        {/form_field}
+
+
+<!--		        	<form action="{url path="/calendar/selectDate"}" method="post">-->
+		        		<input type="hidden" name="action" value="reserver"/>
+		        		<input type="hidden" name="dateDebut" value=""/>
+		        		<input type="hidden" name="dateFin" value=""/>
+		        		<button class="btn btn-primary btnValideCalendar">Valider</button>
+		        	</form>
+		        	
+                {/form}
+        		</div>
+        	</div>
+       	</div>
+    </div>
+    <!-- /.content-section-a -->
+	{/loop}
+
+    <!-- Header -->
+    <a name="about"></a>
+    <div class="intro-header">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-message">
+                        <h1>Landing Page</h1>
+                        <h3>A Template by Start Bootstrap</h3>
+                        <hr class="intro-divider">
+                        <ul class="list-inline intro-social-buttons">
+                            <li>
+                                <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                            </li>
+                            <li>
+                                <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.intro-header -->
+    
+        <a name="about"></a>
+    <div class="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div id="map">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.intro-header -->
+
+    <!-- Page Content -->
+
+	<a  name="services"></a>
+    <div class="content-section-a">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Death to the Stock Photo:<br>Special Thanks</h2>
+                    <p class="lead">A special thanks to <a target="_blank" href="http://join.deathtothestockphoto.com/">Death to the Stock Photo</a> for providing the photographs that you see in this template. Visit their website to become a member.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="{image file='assets/img/grande-cour.jpg'}" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+    <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">3D Device Mockups<br>by PSDCovers</h2>
+                    <p class="lead">Turn your 2D designs into high quality, 3D product shots in seconds using free Photoshop actions by <a target="_blank" href="http://www.psdcovers.com/">PSDCovers</a>! Visit their website to download some of their awesome, free photoshop actions!</p>
+                </div>
+                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+	            
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-b -->
+
+    <div class="content-section-a">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Google Web Fonts and<br>Font Awesome Icons</h2>
+                    <p class="lead">This template features the 'Lato' font, part of the <a target="_blank" href="http://www.google.com/fonts">Google Web Font library</a>, as well as <a target="_blank" href="http://fontawesome.io">icons from Font Awesome</a>.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="{image file='assets/img/phones.png'}" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+	<a  name="contact"></a>
+    <div class="banner">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2>Connect to Start Bootstrap:</h2>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="list-inline banner-social-buttons">
+                        <li>
+                            <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                        </li>
+                        <li>
+                            <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.banner -->
+{/block}
+
+{block name="stylesheet"}
+{hook name="home.stylesheet"}
+	{stylesheets file='assets/css/datepicker.css'}
+        <link rel="stylesheet" href="{$asset_url}"/>
+    {/stylesheets}
+	{stylesheets file='assets/css/responsive-calendar.css'}
+        <link rel="stylesheet" href="{$asset_url}"/>
+    {/stylesheets}
+	{stylesheets file='assets/lib/leaflet.css'}
+        <link rel="stylesheet" href="{$asset_url}"/>
+    {/stylesheets}
+{/block}
+
+{block name="after-javascript-include"}
+{hook name="home.after-javascript-include"}
+	{javascripts file="assets/js/bootstrap-datepicker.js"}
+		<script src="{$asset_url}"></script>
+    {/javascripts} 
+    
+    
+    {javascripts file="assets/js/responsive-calendar.js"}
+		<script src="{$asset_url}"></script>
+    {/javascripts} 
+    {javascripts file="assets/lib/leaflet.js"}
+		<script src="{$asset_url}"></script>
+    {/javascripts} 
+    
+    
+    
+{/block}
+
+{block name="javascript-initialization"}
+{hook name="home.javascript-initialization"}
+
+	
+<script type="text/javascript">
+	
+	function videChoix(){
+		$('#dateChoix').html('');
+		$('input[name="dateDebut"]').val('');
+		$('input[name="dateFin"]').val('');
+		$('.btnValideCalendar').hide();
+		$('.jourArrive').removeClass('jourArrive');
+		$('.jourDepart').removeClass('jourDepart');
+		$('.desactive').removeClass('desactive');
+		$('.dayDispoBloque').addClass('dayDispo');
+		$('.dayDispoBloque').removeClass('dayDispoBloque');
+	}
+	
+	function savChoix(){
+		$('.dayDispo').addClass('dayDispoBloque');
+		$('.desactive').removeClass('dayDispo');
+		$('.jourArrive').removeClass('jourArrive');
+		$('.jourDepart').removeClass('jourDepart');
+		
+		$('[data-instant="' + $('.active:first').data('instant') + '"]').addClass('jourArrive');
+		$('[data-instant="' + $('.active:last').data('instant') + '"]').addClass('jourDepart');
+		
+		$('input[name="dateDebut"]').val($('.active:first a').data('year') + '-' + $('.active:first a').data('month') + '-' + $('.active:first a').data('day'));
+		$('input[name="dateFin"]').val($('.active:last a').data('year') + '-' + $('.active:last a').data('month') + '-' + $('.active:last a').data('day'));
+		$('#dateChoix').html('Date d\'arrivée le ' + $('.active:first a').data('day') + '/' + $('.active:first a').data('month') + '/' + $('.active:first a').data('year') + ' et date de départ le ' + $('.active:last a').data('day') + '/' + $('.active:last a').data('month') + '/' + $('.active:last a').data('year'));
+		$('.btnValideCalendar').show();
+	}
+
+	function colorCasesSemaine2(){
+		
+		$('.day.sam:last').click(function(){
+			if(!$('.active').size()){
+				$('[data-go="next"]').click();
+			}
+		});
+		
+		
+		$('.day.sam:first').click(function(){
+			if(!$('.active').size() && !$(this).hasClass('desactive') && !$(this).hasClass('bloque')){
+				$('[data-go="prev"]').click();
+			}
+		});
+		
+		$('.dayDispo, .dayBloque1, .dayBloque0').click(function(){	
+			if(!$(this).hasClass('dayDispo') && !$(this).hasClass('dayBloque1') && !$(this).hasClass('dayBloque0'))return false;
+			if($(this).hasClass('desactive') || $(this).hasClass('bloque'))return false;
+			if($( this ).hasClass( "active" )){
+				$('.active').removeClass('active');
+				videChoix();
+			}else{
+				if($( this ).hasClass( "sam" )){
+					semaineApres = true;
+					if($('.active').size()){
+						if($('.active').data('instant') < $(this).data('instant')){
+							semaineApres = false;
+						}
+					}
+					if($(this).hasClass('dayBloque1')){
+						semaineApres = false;
+					}
+					
+					
+					autrecase = $( this );
+					var compteurSecure = 0;
+					do{
+						$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+						if(semaineApres){
+							autrecase = autrecase.next();
+							if(!autrecase.size()){
+								autrecase = $('.active:last');
+							}
+						}else{
+							autrecase = autrecase.prev();
+							if(!autrecase.size()){
+								autrecase = $('.active:first');
+							}
+						}
+						compteurSecure++;
+					}while(!autrecase.hasClass('sam') && compteurSecure < 400);
+					$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+				}else{
+					autrecase = $( this );
+					var compteurSecure = 0;
+					do{
+						$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+						autrecase = autrecase.next();
+						compteurSecure++;
+						if(!autrecase.size()){
+							autrecase = $('.active:last');
+						}
+					}while(!autrecase.hasClass('sam') && compteurSecure < 400);
+					$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+					autrecase = $( this );
+					var compteurSecure = 0;
+					do{
+						$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+						autrecase = autrecase.prev();
+						compteurSecure++;
+						if(!autrecase.size()){
+							autrecase = $('.active:first');
+						}
+					}while(!autrecase.hasClass('sam') && compteurSecure < 400);
+					$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+				
+				}
+				var compteurSecure = 0;
+				var premierSam = $('.active:first').data('instant');
+				var dernierSam = $('.active:last').data('instant');
+				do{
+					$('[data-instant="' + premierSam + '"]').addClass('active');
+					
+					premierSam = $('[data-instant="' + premierSam + '"]').next().data('instant');
+					compteurSecure++;
+				}while(premierSam != dernierSam && compteurSecure < 400);
+				
+				var premierSam = $('.active:first').data('instant');
+				var dispoPossible = true;
+				do{
+					
+					if($('[data-instant="' + premierSam + '"]').hasClass('dayBloque2')) dispoPossible = false;
+					if(!dispoPossible) $('[data-instant="' + premierSam + '"]').addClass('desactive');
+					
+					premierSam = $('[data-instant="' + premierSam + '"]').prev().data('instant');
+					compteurSecure++;
+				}while(compteurSecure < 400);
+				var dispoPossible = true;
+				compteurSecure=0;
+				do{
+					if($('[data-instant="' + dernierSam + '"]').hasClass('dayBloque2')) dispoPossible = false;
+					if(!dispoPossible) $('[data-instant="' + dernierSam + '"]').addClass('desactive');
+					dernierSam = $('[data-instant="' + dernierSam + '"]').next().data('instant');
+					compteurSecure++;
+				}while(compteurSecure < 400);
+				
+				var dernierSam = $('.active:last').data('instant');
+				
+				// desactive
+				
+				savChoix();				
+			}
+		});
+	}
+
+
+
+
+	function colorCasesSemaine(){
+		$('.dayDispo').click(function(){	
+			
+			if($( this ).hasClass( "active" )){
+				$('.active').removeClass('active');
+			}else{
+				if($( this ).hasClass( "sam" )){
+					semaineApres = true;
+					if($('.active').size()){
+						if($('.active').data('instant') < $(this).data('instant')){
+							semaineApres = false;
+						}
+					}
+					
+					
+					autrecase = $( this );
+					var compteurSecure = 0;
+					do{
+						$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+						if(semaineApres)
+							autrecase = autrecase.next();
+						else
+							autrecase = autrecase.prev();
+						compteurSecure++;
+					}while(!autrecase.hasClass('sam') && compteurSecure < 400);
+					$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+				}else{
+					autrecase = $( this );
+					var compteurSecure = 0;
+					do{
+						$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+						autrecase = autrecase.next();
+						compteurSecure++;
+					}while(!autrecase.hasClass('sam') && compteurSecure < 400);
+					$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+					autrecase = $( this );
+					var compteurSecure = 0;
+					do{
+						$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+						autrecase = autrecase.prev();
+						compteurSecure++;
+					}while(!autrecase.hasClass('sam') && compteurSecure < 400);
+					$('[data-instant="' + autrecase.data('instant') + '"]').addClass('active');
+				
+				}
+			}
+		});
+	}
+
+
+
+	function colorCases(){
+		$('.dayDispo').click(function(){			
+			if($( this ).hasClass( "active" )){
+				$('.active').removeClass('active');
+			}else{
+				if($('.active').size()){
+					var premiereCase = $('.active').data('instant');
+					var secondeCase = $(this).data('instant');
+					if(premiereCase > secondeCase){
+						premiereCase = $(this).data('instant');
+					 	secondeCase = $('.active').data('instant');
+					}
+					var compteurSecure = 0;
+					do{
+						$('[data-instant="' + premiereCase + '"]').addClass('active');
+						premiereCase = $('[data-instant="' + premiereCase + '"]').next().data('instant');
+						compteurSecure++;
+					}while(premiereCase != secondeCase && compteurSecure < 400);
+					$('[data-instant="' + premiereCase + '"]').addClass('active');
+				}else{
+					$('[data-instant="' + $(this).data('instant') + '"]').addClass('active');
+				}
+			}
+			
+		});
+	}
+	
+	function colorCase(){
+		$('.dayDispo').click(function(){
+			if($( this ).hasClass( "active" ))
+				$('[data-instant="' + $(this).data('instant') + '"]').removeClass('active');
+			else
+				$('[data-instant="' + $(this).data('instant') + '"]').addClass('active');
+			
+		});
+	}
+	$(document).ready(function () {
+		$(".calendrier_meedle").find("[data-go]").click(function() {	
+			var moisActu = $(".calendrier_meedle").find("[data-mois]").data('mois');
+			var anneeActu = $(".calendrier_meedle").find("[data-annee]").data('annee');
+
+			var img = $('<img class="loaderCalendar">'); 
+			img.attr('src', '{image file='assets/img/loader.gif'}');
+			img.appendTo('#dateChoix');
+			
+			if ($(this).data("go") === "prev") {
+				moisActu--;
+				if(moisActu<1){ 
+					moisActu+=12; 
+					anneeActu--;
+				}
+			}
+			if ($(this).data("go") === "next") {
+				moisActu++;
+				if(moisActu>12){ 
+					moisActu-=12; 
+					anneeActu++;
+				}
+			}
+			$(".calendrier_meedle").find("[data-mois]").data('mois', moisActu);
+			$(".calendrier_meedle").find("[data-annee]").data('annee', anneeActu);	
+			$.ajax({
+				method: "GET",	
+		 		url: '{url path="/calendarListMonth"}', 
+ 				data: { moisdebut: moisActu, anneedebut: anneeActu }
+ 			}).done(function( msg ) {
+				$('#calendarListMonth').html(msg);
+				$('.loaderCalendar').remove();
+				
+				colorCasesSemaine2();
+				
+			});
+
+		});
+		
+		
+		colorCasesSemaine2();
+		$('.btnValideCalendar').hide();
+      	
+      	
+      	
+      	/* Map leaflet */
+      	var map = L.map('map').setView([51.505, -0.09], 13);
+	});
+</script>
+
+
+{/block}
