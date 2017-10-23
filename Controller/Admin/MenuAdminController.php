@@ -148,7 +148,7 @@ class MenuAdminController extends BaseAdminController
             $retour = $this->dispatch('module_menu_add', $event);
             $url= $data['success_url'] . '/' . $event->getId();
             
-            $this->redirect($url);
+            return $response = $this->generateRedirect($url);
 
         } catch (FormValidationException $e) {
             $message = $this->createStandardFormValidationErrorMessage($e);
