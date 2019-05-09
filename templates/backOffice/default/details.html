@@ -48,13 +48,14 @@
                                                 <span class="message">{intl l="Déposer un lien ici afin de l'ajouter au menu"}</span>
                                             </p>
                                             
-                                            {loop type="menu_item" name="lienDuMenu" menu_id=$menu_id}
-	                                            {if $TYPE && $OBJET}
+				    	{loop type="menu_item" name="lienDuMenu" menu_id=$menu_id}
+					    	{if $TYPE && $OBJET}
+							{$typid=$TYPE_ID}
 	                                            	{loop type=$TYPE name="itemmenu" id=$OBJET}
-													<div class="drag" data-id="{$ID}">{$TITLE}</div>
-													{/loop}
-												{/if}
-											{/loop}
+								<div class="drag" data-id="{$ID}" data-cpfc="{$typid}">{$TITLE}</div>
+							{/loop}
+						{/if}
+					{/loop}
                                             
                                         </div>                                
 										
