@@ -88,6 +88,7 @@ class MenuItemLoop extends BaseI18nLoop implements PropelSearchLoopInterface
                 ->set('ID', $menuItem->getId())
                 ->set('OBJET', $menuItem->getObjet())
                 ->set('TYPE', $type)
+                ->set('TYPE_ID', $menuItem->getTypobj())
        //         ->set('TITLE', $title)
         //        ->set('DESCRIPTION', $menuItem->getVirtualColumn('i18n_DESCRIPTION'))
             ;
