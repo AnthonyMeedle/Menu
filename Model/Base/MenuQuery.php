@@ -24,6 +24,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenuQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildMenuQuery orderByVisible($order = Criteria::ASC) Order by the visible column
  * @method     ChildMenuQuery orderByPosition($order = Criteria::ASC) Order by the position column
+ * @method     ChildMenuQuery orderByTypobj($order = Criteria::ASC) Order by the typobj column
+ * @method     ChildMenuQuery orderByObjet($order = Criteria::ASC) Order by the objet column
  * @method     ChildMenuQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildMenuQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method     ChildMenuQuery orderByVersion($order = Criteria::ASC) Order by the version column
@@ -33,6 +35,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenuQuery groupById() Group by the id column
  * @method     ChildMenuQuery groupByVisible() Group by the visible column
  * @method     ChildMenuQuery groupByPosition() Group by the position column
+ * @method     ChildMenuQuery groupByTypobj() Group by the typobj column
+ * @method     ChildMenuQuery groupByObjet() Group by the objet column
  * @method     ChildMenuQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildMenuQuery groupByUpdatedAt() Group by the updated_at column
  * @method     ChildMenuQuery groupByVersion() Group by the version column
@@ -57,6 +61,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildMenu findOneById(int $id) Return the first ChildMenu filtered by the id column
  * @method     ChildMenu findOneByVisible(int $visible) Return the first ChildMenu filtered by the visible column
  * @method     ChildMenu findOneByPosition(int $position) Return the first ChildMenu filtered by the position column
+ * @method     ChildMenu findOneByTypobj(int $typobj) Return the first ChildMenu filtered by the typobj column
+ * @method     ChildMenu findOneByObjet(int $objet) Return the first ChildMenu filtered by the objet column
  * @method     ChildMenu findOneByCreatedAt(string $created_at) Return the first ChildMenu filtered by the created_at column
  * @method     ChildMenu findOneByUpdatedAt(string $updated_at) Return the first ChildMenu filtered by the updated_at column
  * @method     ChildMenu findOneByVersion(int $version) Return the first ChildMenu filtered by the version column
@@ -66,6 +72,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     array findById(int $id) Return ChildMenu objects filtered by the id column
  * @method     array findByVisible(int $visible) Return ChildMenu objects filtered by the visible column
  * @method     array findByPosition(int $position) Return ChildMenu objects filtered by the position column
+ * @method     array findByTypobj(int $typobj) Return ChildMenu objects filtered by the typobj column
+ * @method     array findByObjet(int $objet) Return ChildMenu objects filtered by the objet column
  * @method     array findByCreatedAt(string $created_at) Return ChildMenu objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildMenu objects filtered by the updated_at column
  * @method     array findByVersion(int $version) Return ChildMenu objects filtered by the version column
@@ -166,7 +174,7 @@ abstract class MenuQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, VISIBLE, POSITION, CREATED_AT, UPDATED_AT, VERSION, VERSION_CREATED_AT, VERSION_CREATED_BY FROM menu WHERE ID = :p0';
+        $sql = 'SELECT ID, VISIBLE, POSITION, TYPOBJ, OBJET, CREATED_AT, UPDATED_AT, VERSION, VERSION_CREATED_AT, VERSION_CREATED_BY FROM menu WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -376,6 +384,88 @@ abstract class MenuQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(MenuTableMap::POSITION, $position, $comparison);
+    }
+
+    /**
+     * Filter the query on the typobj column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTypobj(1234); // WHERE typobj = 1234
+     * $query->filterByTypobj(array(12, 34)); // WHERE typobj IN (12, 34)
+     * $query->filterByTypobj(array('min' => 12)); // WHERE typobj > 12
+     * </code>
+     *
+     * @param     mixed $typobj The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByTypobj($typobj = null, $comparison = null)
+    {
+        if (is_array($typobj)) {
+            $useMinMax = false;
+            if (isset($typobj['min'])) {
+                $this->addUsingAlias(MenuTableMap::TYPOBJ, $typobj['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($typobj['max'])) {
+                $this->addUsingAlias(MenuTableMap::TYPOBJ, $typobj['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(MenuTableMap::TYPOBJ, $typobj, $comparison);
+    }
+
+    /**
+     * Filter the query on the objet column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByObjet(1234); // WHERE objet = 1234
+     * $query->filterByObjet(array(12, 34)); // WHERE objet IN (12, 34)
+     * $query->filterByObjet(array('min' => 12)); // WHERE objet > 12
+     * </code>
+     *
+     * @param     mixed $objet The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildMenuQuery The current query, for fluid interface
+     */
+    public function filterByObjet($objet = null, $comparison = null)
+    {
+        if (is_array($objet)) {
+            $useMinMax = false;
+            if (isset($objet['min'])) {
+                $this->addUsingAlias(MenuTableMap::OBJET, $objet['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($objet['max'])) {
+                $this->addUsingAlias(MenuTableMap::OBJET, $objet['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(MenuTableMap::OBJET, $objet, $comparison);
     }
 
     /**

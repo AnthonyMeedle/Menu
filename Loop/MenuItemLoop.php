@@ -76,13 +76,13 @@ class MenuItemLoop extends BaseI18nLoop implements PropelSearchLoopInterface
 				break;	
 				case 1 :
 					$type='product';
-				break;	
+				break;
 				case 2 :
 					$type='folder';
-				break;	
+				break;
 				case 3 :
 					$type='content';
-				break;	
+				break;
 			}
             $loopResultRow
                 ->set('ID', $menuItem->getId())

@@ -16,11 +16,9 @@
 		<ul class="breadcrumb">
 			<li><a href="{url path='/admin/home'}">{intl l="Home"}</a></li>
 			<li><a href="{url path='/admin/tools'}">{intl l="Outils"}</a></li>
-			<li><a href="{url path='/admin/modules/menu/gestion'}">{intl l="Menu"}</a></li>
+			<li><a href="{url path='/admin/modules/menu/menu_gestion'}">{intl l="Menu"}</a></li>
 			<li>{intl l="Détails"}</li>
 		</ul>
-
-     
 
         <div class="row">
             <div class="col-md-12 general-block-decorator clearfix">
@@ -28,7 +26,40 @@
           
                 <div class="tab-content">
                     
-
+						<form action="{url path="/admin/modules/menu/update/$menu_id"}" method="post">
+							<input type="hidden" name="success_url" value="{url path="/admin/modules/menu/details/$menu_id"}">
+	                        <div class="col-md-12 title title-without-tabs">
+	                            {intl l="Modifier le titre du menu"}
+	                        </div>						
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<label for="{$id}" class="control-label">{intl l="Titre"} : </label>
+										{loop type="menu" name="menu.menu" id="$menu_id"}
+											<input type="text" class="form-control"  name="title" value="{$TITLE}" required="required"/>
+										{/loop}										
+									</div>
+                    				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Modifier"}</button>
+								</div>
+							</div>
+						</form>
+						<br/>
+						<form action="{url path="/admin/modules/menu/item/add/$menu_id"}" method="post">
+							<input type="hidden" name="success_url" value="{url path="/admin/modules/menu/details/$menu_id"}">
+	                        <div class="col-md-12 title title-without-tabs">
+	                            {intl l="Ajouter une ou plusieurs références au menu"}
+	                        </div>						
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<label for="{$id}" class="control-label">{intl l="Référence(s)"} : </label>
+											<input type="text" class="form-control" name="refs" value="" required="required" placeholder="REF1,REF2,REF3"/>
+									</div>
+                    				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Ajouter"}</button>
+								</div>
+							</div>
+						</form>
+						<br/>	
                         <div class="col-md-12 title title-without-tabs">
                             {intl l="Gérer le menu"}
                         </div>
@@ -50,8 +81,9 @@
                                             
                                             {loop type="menu_item" name="lienDuMenu" menu_id=$menu_id}
 	                                            {if $TYPE && $OBJET}
-	                                            	{loop type=$TYPE name="itemmenu" id=$OBJET}
-													<div class="drag" data-id="{$ID}">{$TITLE}</div>
+													{$typid=$TYPE_ID}
+													{loop type=$TYPE name="itemmenu" id=$OBJET}
+														<div class="drag" data-id="{$ID}" data-cpfc="{$typid}">{$TYPE} - {$TITLE}</div>
 													{/loop}
 												{/if}
 											{/loop}

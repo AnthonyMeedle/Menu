@@ -12,7 +12,7 @@ class MenuTools extends BaseHook {
 		$event->add(array(
 			"id" => "menuTools",
 			"class" => '',
-			"url" => URL::getInstance()->absoluteUrl('/admin/modules/menu/gestion'),
+			"url" => URL::getInstance()->absoluteUrl('/admin/modules/menu/menu_gestion'),
 			"title" => $this->trans("Menu")
 		));		
     }

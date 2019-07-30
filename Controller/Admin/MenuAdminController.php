@@ -12,12 +12,18 @@ use Menu\Form\Admin\AddMenuForm;
 use Menu\Form\Admin\DeleteMenuForm;
 use Menu\Form\Admin\UpdateMenuItemForm;
 use Menu\Event\MenuEvent;
-
+use Menu\Model\Menu;
+use Menu\Model\MenuQuery;
+use Menu\Model\MenuItem;
+use Menu\Model\MenuItemQuery;
+use Menu\Model\MenuI18nQuery;
+use Menu\Model\MenuI18n;
 
 use Thelia\Log\Tlog;
 use Thelia\Core\Event\ActionEvent;
 use Thelia\Controller\Admin\BaseAdminController;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 
 
 class MenuAdminController extends BaseAdminController
@@ -27,7 +33,16 @@ class MenuAdminController extends BaseAdminController
     }
 	public function noAction(){}
 	
-	
+	public function addItemsAction($menu_id){
+		
+		$event = new MenuEvent();
+
+		$event->setId($menu_id);
+		$event->setListeItem($_REQUEST['refs']);
+		$retour = $this->dispatch('module_menu_add_item', $event);
+
+		return $this->generateRedirect($_REQUEST['success_url']);
+	}
 	
 	public function detailUpdateAction($menu_id){
 		
@@ -75,7 +90,7 @@ class MenuAdminController extends BaseAdminController
 
 		
 		return $this->render(
-          "details", array(
+          "menu_details", array(
                 'menu_id' => $menu_id
             )
         );
@@ -83,7 +98,7 @@ class MenuAdminController extends BaseAdminController
 	
 	public function detailAction($menu_id){
 		return $this->render(
-          "details", array(
+          "menu_details", array(
                 'menu_id' => $menu_id
             )
         );
@@ -129,6 +144,18 @@ class MenuAdminController extends BaseAdminController
             ;
         }
     }
+    
+      public function updateAction($menu_id){
+    	if(!empty($_REQUEST['title'])){
+	    	if(null !== $menu = MenuI18nQuery::create()->findPk($menu_id)){
+		    	$menu->setLocale('fr_FR');
+		    	$menu->setTitle($_REQUEST['title']);
+		    	$menu->save();
+	    	}
+    	}
+    	return $this->generateRedirect($_REQUEST['success_url']);
+    }
+    
     public function addAction()
     {
         $message = false;
@@ -148,7 +175,8 @@ class MenuAdminController extends BaseAdminController
             $retour = $this->dispatch('module_menu_add', $event);
             $url= $data['success_url'] . '/' . $event->getId();
             
-            return $response = $this->generateRedirect($url);
+			return $this->generateRedirect($url);
+   //         $this->redirect($url);
 
         } catch (FormValidationException $e) {
             $message = $this->createStandardFormValidationErrorMessage($e);
@@ -166,5 +194,31 @@ class MenuAdminController extends BaseAdminController
                 ->setGeneralError($message)
             ;
         }
+    }
+    public function addListAction()
+    {
+		if($_REQUEST['objet']){
+			if(null === $menu = MenuQuery::create()->filterByTypobj($_REQUEST['menu_typobj'])->filterByObjet($_REQUEST['menu_objet'])->findOne()){
+				$menu = new Menu();
+				$title = 'category ' . $_REQUEST['menu_objet'];
+				$menu->setTypobj($_REQUEST['menu_typobj'])->setObjet($_REQUEST['menu_objet'])->save();
+//				$menu->setLocale('fr_FR')->setTitle($title)->save();
+				$menu_i18n = new MenuI18n();
+				$menu_i18n->setId($menu->getId());
+				$menu_i18n->setTitle($title);
+				$menu_i18n->setLocale('fr_FR');
+				$menu_i18n->save();
+			}
+			$menuItem = new MenuItem();
+			$menuItem->setMenuId($menu->getId())->setVisible(1)->setTypobj($_REQUEST['typobj'])->setObjet($_REQUEST['objet'])->save();
+			if(null !== $menuitems = MenuItemQuery::create()->filterByMenuId($menu->getId())->orderBy('position')->find()){
+				$pos=1;
+				foreach($menuitems as $menuitem){
+					$menuitem->setPosition($pos++)->save();
+				}
+			}
+		}
+		
+		return $this->generateRedirect($_REQUEST['success_url']);
     }
 }

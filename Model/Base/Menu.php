@@ -83,6 +83,20 @@ abstract class Menu implements ActiveRecordInterface
     protected $position;
 
     /**
+     * The value for the typobj field.
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $typobj;
+
+    /**
+     * The value for the objet field.
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $objet;
+
+    /**
      * The value for the created_at field.
      * @var        string
      */
@@ -163,6 +177,8 @@ abstract class Menu implements ActiveRecordInterface
     {
         $this->visible = 0;
         $this->position = 0;
+        $this->typobj = 0;
+        $this->objet = 0;
         $this->version = 0;
     }
 
@@ -460,6 +476,28 @@ abstract class Menu implements ActiveRecordInterface
     }
 
     /**
+     * Get the [typobj] column value.
+     *
+     * @return   int
+     */
+    public function getTypobj()
+    {
+
+        return $this->typobj;
+    }
+
+    /**
+     * Get the [objet] column value.
+     *
+     * @return   int
+     */
+    public function getObjet()
+    {
+
+        return $this->objet;
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
@@ -605,6 +643,48 @@ abstract class Menu implements ActiveRecordInterface
     } // setPosition()
 
     /**
+     * Set the value of [typobj] column.
+     *
+     * @param      int $v new value
+     * @return   \Menu\Model\Menu The current object (for fluent API support)
+     */
+    public function setTypobj($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->typobj !== $v) {
+            $this->typobj = $v;
+            $this->modifiedColumns[MenuTableMap::TYPOBJ] = true;
+        }
+
+
+        return $this;
+    } // setTypobj()
+
+    /**
+     * Set the value of [objet] column.
+     *
+     * @param      int $v new value
+     * @return   \Menu\Model\Menu The current object (for fluent API support)
+     */
+    public function setObjet($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->objet !== $v) {
+            $this->objet = $v;
+            $this->modifiedColumns[MenuTableMap::OBJET] = true;
+        }
+
+
+        return $this;
+    } // setObjet()
+
+    /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param      mixed $v string, integer (timestamp), or \DateTime value.
@@ -727,6 +807,14 @@ abstract class Menu implements ActiveRecordInterface
                 return false;
             }
 
+            if ($this->typobj !== 0) {
+                return false;
+            }
+
+            if ($this->objet !== 0) {
+                return false;
+            }
+
             if ($this->version !== 0) {
                 return false;
             }
@@ -767,28 +855,34 @@ abstract class Menu implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MenuTableMap::translateFieldName('Position', TableMap::TYPE_PHPNAME, $indexType)];
             $this->position = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MenuTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MenuTableMap::translateFieldName('Typobj', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->typobj = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MenuTableMap::translateFieldName('Objet', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->objet = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MenuTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MenuTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : MenuTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MenuTableMap::translateFieldName('Version', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : MenuTableMap::translateFieldName('Version', TableMap::TYPE_PHPNAME, $indexType)];
             $this->version = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : MenuTableMap::translateFieldName('VersionCreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : MenuTableMap::translateFieldName('VersionCreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->version_created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : MenuTableMap::translateFieldName('VersionCreatedBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : MenuTableMap::translateFieldName('VersionCreatedBy', TableMap::TYPE_PHPNAME, $indexType)];
             $this->version_created_by = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -798,7 +892,7 @@ abstract class Menu implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = MenuTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = MenuTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Menu\Model\Menu object", 0, $e);
@@ -1077,6 +1171,12 @@ abstract class Menu implements ActiveRecordInterface
         if ($this->isColumnModified(MenuTableMap::POSITION)) {
             $modifiedColumns[':p' . $index++]  = 'POSITION';
         }
+        if ($this->isColumnModified(MenuTableMap::TYPOBJ)) {
+            $modifiedColumns[':p' . $index++]  = 'TYPOBJ';
+        }
+        if ($this->isColumnModified(MenuTableMap::OBJET)) {
+            $modifiedColumns[':p' . $index++]  = 'OBJET';
+        }
         if ($this->isColumnModified(MenuTableMap::CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
         }
@@ -1111,6 +1211,12 @@ abstract class Menu implements ActiveRecordInterface
                         break;
                     case 'POSITION':
                         $stmt->bindValue($identifier, $this->position, PDO::PARAM_INT);
+                        break;
+                    case 'TYPOBJ':
+                        $stmt->bindValue($identifier, $this->typobj, PDO::PARAM_INT);
+                        break;
+                    case 'OBJET':
+                        $stmt->bindValue($identifier, $this->objet, PDO::PARAM_INT);
                         break;
                     case 'CREATED_AT':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1199,18 +1305,24 @@ abstract class Menu implements ActiveRecordInterface
                 return $this->getPosition();
                 break;
             case 3:
-                return $this->getCreatedAt();
+                return $this->getTypobj();
                 break;
             case 4:
-                return $this->getUpdatedAt();
+                return $this->getObjet();
                 break;
             case 5:
-                return $this->getVersion();
+                return $this->getCreatedAt();
                 break;
             case 6:
-                return $this->getVersionCreatedAt();
+                return $this->getUpdatedAt();
                 break;
             case 7:
+                return $this->getVersion();
+                break;
+            case 8:
+                return $this->getVersionCreatedAt();
+                break;
+            case 9:
                 return $this->getVersionCreatedBy();
                 break;
             default:
@@ -1245,11 +1357,13 @@ abstract class Menu implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getVisible(),
             $keys[2] => $this->getPosition(),
-            $keys[3] => $this->getCreatedAt(),
-            $keys[4] => $this->getUpdatedAt(),
-            $keys[5] => $this->getVersion(),
-            $keys[6] => $this->getVersionCreatedAt(),
-            $keys[7] => $this->getVersionCreatedBy(),
+            $keys[3] => $this->getTypobj(),
+            $keys[4] => $this->getObjet(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
+            $keys[7] => $this->getVersion(),
+            $keys[8] => $this->getVersionCreatedAt(),
+            $keys[9] => $this->getVersionCreatedBy(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1307,18 +1421,24 @@ abstract class Menu implements ActiveRecordInterface
                 $this->setPosition($value);
                 break;
             case 3:
-                $this->setCreatedAt($value);
+                $this->setTypobj($value);
                 break;
             case 4:
-                $this->setUpdatedAt($value);
+                $this->setObjet($value);
                 break;
             case 5:
-                $this->setVersion($value);
+                $this->setCreatedAt($value);
                 break;
             case 6:
-                $this->setVersionCreatedAt($value);
+                $this->setUpdatedAt($value);
                 break;
             case 7:
+                $this->setVersion($value);
+                break;
+            case 8:
+                $this->setVersionCreatedAt($value);
+                break;
+            case 9:
                 $this->setVersionCreatedBy($value);
                 break;
         } // switch()
@@ -1348,11 +1468,13 @@ abstract class Menu implements ActiveRecordInterface
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setVisible($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setPosition($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setVersion($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setVersionCreatedAt($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setVersionCreatedBy($arr[$keys[7]]);
+        if (array_key_exists($keys[3], $arr)) $this->setTypobj($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setObjet($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setCreatedAt($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setUpdatedAt($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setVersion($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setVersionCreatedAt($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setVersionCreatedBy($arr[$keys[9]]);
     }
 
     /**
@@ -1367,6 +1489,8 @@ abstract class Menu implements ActiveRecordInterface
         if ($this->isColumnModified(MenuTableMap::ID)) $criteria->add(MenuTableMap::ID, $this->id);
         if ($this->isColumnModified(MenuTableMap::VISIBLE)) $criteria->add(MenuTableMap::VISIBLE, $this->visible);
         if ($this->isColumnModified(MenuTableMap::POSITION)) $criteria->add(MenuTableMap::POSITION, $this->position);
+        if ($this->isColumnModified(MenuTableMap::TYPOBJ)) $criteria->add(MenuTableMap::TYPOBJ, $this->typobj);
+        if ($this->isColumnModified(MenuTableMap::OBJET)) $criteria->add(MenuTableMap::OBJET, $this->objet);
         if ($this->isColumnModified(MenuTableMap::CREATED_AT)) $criteria->add(MenuTableMap::CREATED_AT, $this->created_at);
         if ($this->isColumnModified(MenuTableMap::UPDATED_AT)) $criteria->add(MenuTableMap::UPDATED_AT, $this->updated_at);
         if ($this->isColumnModified(MenuTableMap::VERSION)) $criteria->add(MenuTableMap::VERSION, $this->version);
@@ -1437,6 +1561,8 @@ abstract class Menu implements ActiveRecordInterface
     {
         $copyObj->setVisible($this->getVisible());
         $copyObj->setPosition($this->getPosition());
+        $copyObj->setTypobj($this->getTypobj());
+        $copyObj->setObjet($this->getObjet());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         $copyObj->setVersion($this->getVersion());
@@ -1959,6 +2085,8 @@ abstract class Menu implements ActiveRecordInterface
         $this->id = null;
         $this->visible = null;
         $this->position = null;
+        $this->typobj = null;
+        $this->objet = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->version = null;
@@ -2086,6 +2214,8 @@ abstract class Menu implements ActiveRecordInterface
         $version->setId($this->getId());
         $version->setVisible($this->getVisible());
         $version->setPosition($this->getPosition());
+        $version->setTypobj($this->getTypobj());
+        $version->setObjet($this->getObjet());
         $version->setCreatedAt($this->getCreatedAt());
         $version->setUpdatedAt($this->getUpdatedAt());
         $version->setVersion($this->getVersion());
@@ -2135,6 +2265,8 @@ abstract class Menu implements ActiveRecordInterface
         $this->setId($version->getId());
         $this->setVisible($version->getVisible());
         $this->setPosition($version->getPosition());
+        $this->setTypobj($version->getTypobj());
+        $this->setObjet($version->getObjet());
         $this->setCreatedAt($version->getCreatedAt());
         $this->setUpdatedAt($version->getUpdatedAt());
         $this->setVersion($version->getVersion());

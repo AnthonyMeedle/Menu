@@ -4,6 +4,8 @@
 		<column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
 		<column defaultValue="0" name="visible" required="true" type="TINYINT" />
 		<column defaultValue="0" name="position" required="true" type="INTEGER" />
+		<column defaultValue="0" name="typobj" type="INTEGER" />
+		<column defaultValue="0" name="objet" type="INTEGER" />
 		<behavior name="timestampable" />
 		<behavior name="versionable">
 			<parameter name="log_created_at" value="true" />

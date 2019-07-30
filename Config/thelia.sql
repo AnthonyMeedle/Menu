@@ -7,11 +7,15 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- menu
 -- ---------------------------------------------------------------------
 
+DROP TABLE IF EXISTS `menu`;
+
 CREATE TABLE `menu`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `visible` TINYINT DEFAULT 0 NOT NULL,
     `position` INTEGER DEFAULT 0 NOT NULL,
+    `typobj` INTEGER DEFAULT 0,
+    `objet` INTEGER DEFAULT 0,
     `created_at` DATETIME,
     `updated_at` DATETIME,
     `version` INTEGER DEFAULT 0,
@@ -23,6 +27,8 @@ CREATE TABLE `menu`
 -- ---------------------------------------------------------------------
 -- menu_i18n
 -- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `menu_i18n`;
 
 CREATE TABLE `menu_i18n`
 (
@@ -45,7 +51,7 @@ CREATE TABLE `menu_i18n`
 -- menu_item
 -- ---------------------------------------------------------------------
 
-
+DROP TABLE IF EXISTS `menu_item`;
 
 CREATE TABLE `menu_item`
 (
@@ -73,6 +79,7 @@ CREATE TABLE `menu_item`
 -- menu_item_i18n
 -- ---------------------------------------------------------------------
 
+DROP TABLE IF EXISTS `menu_item_i18n`;
 
 CREATE TABLE `menu_item_i18n`
 (
@@ -95,12 +102,15 @@ CREATE TABLE `menu_item_i18n`
 -- menu_version
 -- ---------------------------------------------------------------------
 
+DROP TABLE IF EXISTS `menu_version`;
 
 CREATE TABLE `menu_version`
 (
     `id` INTEGER NOT NULL,
     `visible` TINYINT DEFAULT 0 NOT NULL,
     `position` INTEGER DEFAULT 0 NOT NULL,
+    `typobj` INTEGER DEFAULT 0,
+    `objet` INTEGER DEFAULT 0,
     `created_at` DATETIME,
     `updated_at` DATETIME,
     `version` INTEGER DEFAULT 0 NOT NULL,
@@ -119,6 +129,7 @@ CREATE TABLE `menu_version`
 -- menu_i18n_version
 -- ---------------------------------------------------------------------
 
+DROP TABLE IF EXISTS `menu_i18n_version`;
 
 CREATE TABLE `menu_i18n_version`
 (
@@ -144,6 +155,7 @@ CREATE TABLE `menu_i18n_version`
 -- menu_item_version
 -- ---------------------------------------------------------------------
 
+DROP TABLE IF EXISTS `menu_item_version`;
 
 CREATE TABLE `menu_item_version`
 (
@@ -170,6 +182,7 @@ CREATE TABLE `menu_item_version`
 -- menu_item_i18n_version
 -- ---------------------------------------------------------------------
 
+DROP TABLE IF EXISTS `menu_item_i18n_version`;
 
 CREATE TABLE `menu_item_i18n_version`
 (

@@ -58,7 +58,7 @@ class MenuTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 10;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class MenuTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /**
      * the column name for the ID field
@@ -84,6 +84,16 @@ class MenuTableMap extends TableMap
      * the column name for the POSITION field
      */
     const POSITION = 'menu.POSITION';
+
+    /**
+     * the column name for the TYPOBJ field
+     */
+    const TYPOBJ = 'menu.TYPOBJ';
+
+    /**
+     * the column name for the OBJET field
+     */
+    const OBJET = 'menu.OBJET';
 
     /**
      * the column name for the CREATED_AT field
@@ -122,12 +132,12 @@ class MenuTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Visible', 'Position', 'CreatedAt', 'UpdatedAt', 'Version', 'VersionCreatedAt', 'VersionCreatedBy', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'visible', 'position', 'createdAt', 'updatedAt', 'version', 'versionCreatedAt', 'versionCreatedBy', ),
-        self::TYPE_COLNAME       => array(MenuTableMap::ID, MenuTableMap::VISIBLE, MenuTableMap::POSITION, MenuTableMap::CREATED_AT, MenuTableMap::UPDATED_AT, MenuTableMap::VERSION, MenuTableMap::VERSION_CREATED_AT, MenuTableMap::VERSION_CREATED_BY, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'VISIBLE', 'POSITION', 'CREATED_AT', 'UPDATED_AT', 'VERSION', 'VERSION_CREATED_AT', 'VERSION_CREATED_BY', ),
-        self::TYPE_FIELDNAME     => array('id', 'visible', 'position', 'created_at', 'updated_at', 'version', 'version_created_at', 'version_created_by', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'Visible', 'Position', 'Typobj', 'Objet', 'CreatedAt', 'UpdatedAt', 'Version', 'VersionCreatedAt', 'VersionCreatedBy', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'visible', 'position', 'typobj', 'objet', 'createdAt', 'updatedAt', 'version', 'versionCreatedAt', 'versionCreatedBy', ),
+        self::TYPE_COLNAME       => array(MenuTableMap::ID, MenuTableMap::VISIBLE, MenuTableMap::POSITION, MenuTableMap::TYPOBJ, MenuTableMap::OBJET, MenuTableMap::CREATED_AT, MenuTableMap::UPDATED_AT, MenuTableMap::VERSION, MenuTableMap::VERSION_CREATED_AT, MenuTableMap::VERSION_CREATED_BY, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'VISIBLE', 'POSITION', 'TYPOBJ', 'OBJET', 'CREATED_AT', 'UPDATED_AT', 'VERSION', 'VERSION_CREATED_AT', 'VERSION_CREATED_BY', ),
+        self::TYPE_FIELDNAME     => array('id', 'visible', 'position', 'typobj', 'objet', 'created_at', 'updated_at', 'version', 'version_created_at', 'version_created_by', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -137,12 +147,12 @@ class MenuTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Visible' => 1, 'Position' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, 'Version' => 5, 'VersionCreatedAt' => 6, 'VersionCreatedBy' => 7, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'visible' => 1, 'position' => 2, 'createdAt' => 3, 'updatedAt' => 4, 'version' => 5, 'versionCreatedAt' => 6, 'versionCreatedBy' => 7, ),
-        self::TYPE_COLNAME       => array(MenuTableMap::ID => 0, MenuTableMap::VISIBLE => 1, MenuTableMap::POSITION => 2, MenuTableMap::CREATED_AT => 3, MenuTableMap::UPDATED_AT => 4, MenuTableMap::VERSION => 5, MenuTableMap::VERSION_CREATED_AT => 6, MenuTableMap::VERSION_CREATED_BY => 7, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'VISIBLE' => 1, 'POSITION' => 2, 'CREATED_AT' => 3, 'UPDATED_AT' => 4, 'VERSION' => 5, 'VERSION_CREATED_AT' => 6, 'VERSION_CREATED_BY' => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'visible' => 1, 'position' => 2, 'created_at' => 3, 'updated_at' => 4, 'version' => 5, 'version_created_at' => 6, 'version_created_by' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Visible' => 1, 'Position' => 2, 'Typobj' => 3, 'Objet' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, 'Version' => 7, 'VersionCreatedAt' => 8, 'VersionCreatedBy' => 9, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'visible' => 1, 'position' => 2, 'typobj' => 3, 'objet' => 4, 'createdAt' => 5, 'updatedAt' => 6, 'version' => 7, 'versionCreatedAt' => 8, 'versionCreatedBy' => 9, ),
+        self::TYPE_COLNAME       => array(MenuTableMap::ID => 0, MenuTableMap::VISIBLE => 1, MenuTableMap::POSITION => 2, MenuTableMap::TYPOBJ => 3, MenuTableMap::OBJET => 4, MenuTableMap::CREATED_AT => 5, MenuTableMap::UPDATED_AT => 6, MenuTableMap::VERSION => 7, MenuTableMap::VERSION_CREATED_AT => 8, MenuTableMap::VERSION_CREATED_BY => 9, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'VISIBLE' => 1, 'POSITION' => 2, 'TYPOBJ' => 3, 'OBJET' => 4, 'CREATED_AT' => 5, 'UPDATED_AT' => 6, 'VERSION' => 7, 'VERSION_CREATED_AT' => 8, 'VERSION_CREATED_BY' => 9, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'visible' => 1, 'position' => 2, 'typobj' => 3, 'objet' => 4, 'created_at' => 5, 'updated_at' => 6, 'version' => 7, 'version_created_at' => 8, 'version_created_by' => 9, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -164,6 +174,8 @@ class MenuTableMap extends TableMap
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('VISIBLE', 'Visible', 'TINYINT', true, null, 0);
         $this->addColumn('POSITION', 'Position', 'INTEGER', true, null, 0);
+        $this->addColumn('TYPOBJ', 'Typobj', 'INTEGER', false, null, 0);
+        $this->addColumn('OBJET', 'Objet', 'INTEGER', false, null, 0);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('VERSION', 'Version', 'INTEGER', false, null, 0);
@@ -345,6 +357,8 @@ class MenuTableMap extends TableMap
             $criteria->addSelectColumn(MenuTableMap::ID);
             $criteria->addSelectColumn(MenuTableMap::VISIBLE);
             $criteria->addSelectColumn(MenuTableMap::POSITION);
+            $criteria->addSelectColumn(MenuTableMap::TYPOBJ);
+            $criteria->addSelectColumn(MenuTableMap::OBJET);
             $criteria->addSelectColumn(MenuTableMap::CREATED_AT);
             $criteria->addSelectColumn(MenuTableMap::UPDATED_AT);
             $criteria->addSelectColumn(MenuTableMap::VERSION);
@@ -354,6 +368,8 @@ class MenuTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.VISIBLE');
             $criteria->addSelectColumn($alias . '.POSITION');
+            $criteria->addSelectColumn($alias . '.TYPOBJ');
+            $criteria->addSelectColumn($alias . '.OBJET');
             $criteria->addSelectColumn($alias . '.CREATED_AT');
             $criteria->addSelectColumn($alias . '.UPDATED_AT');
             $criteria->addSelectColumn($alias . '.VERSION');

@@ -24,6 +24,8 @@ class MenuLoop extends BaseI18nLoop implements PropelSearchLoopInterface
     {
         return new ArgumentCollection(
             Argument::createIntListTypeArgument('id'),
+            Argument::createIntListTypeArgument('typobj'),
+            Argument::createIntListTypeArgument('objet'),
             Argument::createBooleanOrBothTypeArgument('visible')
         );
     }
@@ -41,6 +43,16 @@ class MenuLoop extends BaseI18nLoop implements PropelSearchLoopInterface
         $id = $this->getId();
         if ($id) {
             $search->filterById($id, Criteria::IN);
+        }
+		
+        $typobj = $this->getTypobj();
+        if ($typobj) {
+            $search->filterByTypobj($typobj, Criteria::IN);
+        }
+		
+        $objet = $this->getObjet();
+        if ($objet) {
+            $search->filterByObjet($objet, Criteria::IN);
         }
 
 

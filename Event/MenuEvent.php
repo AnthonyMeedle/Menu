@@ -78,4 +78,16 @@ class MenuEvent extends ActionEvent
         return $this->listeItem;
     }
   
+    public function setMenuItem($listeItem)
+    {
+        $this->listeItem = $listeItem;
+
+        return $this;
+    }
+
+    public function getMenuItem()
+    {
+        return $this->listeItem;
+    }
+  
 } 

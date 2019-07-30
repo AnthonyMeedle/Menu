@@ -1,0 +1,23 @@
+{default_translation_domain domain='menu.default'}
+<div class="general-block-decorator">
+	<form action="{url path="/admin/modules/menu/list"}" method="post" class="form-inline">
+		<input type="hidden" name="success_url" value="{url path={navigate to="current"} current_tab="modules"}">
+		<input type="hidden" name="menu_typobj" value="0">
+		<input type="hidden" name="menu_objet" value="{category attr="id"}">
+	<div class="row">
+		<div class="col-md-3">Ajouter un lien au menu interne</div>
+		<div class="form-group col-md-3">
+			<select class="form-control" name="typobj">
+				<option value="0">Category</option>
+				<option value="1">Product</option>
+				<option value="2">Folder</option>
+				<option value="3">Content</option>
+			</select>
+		</div>
+		<div class="form-group col-md-3">
+			<input  type="number" name="objet" value="" placeholder="id" class="form-control">
+		</div>
+		<button class="btn btn-primary col-md-2">Valider</button>
+	</div>
+	</form>
+</div>

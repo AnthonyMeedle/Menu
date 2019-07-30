@@ -10,6 +10,15 @@
     <route id="menu.add" path="/admin/modules/menu/add" methods="post">
         <default key="_controller">Menu\Controller\Admin\MenuAdminController::addAction</default>
     </route>
+    <route id="menu.add.list" path="/admin/modules/menu/list" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::addListAction</default>
+    </route>
+    <route id="menu.update" path="/admin/modules/menu/update/{menu_id}" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::updateAction</default>
+        <requirement key="menu_id">\d+</requirement>
+    </route>
+    
+    
     
     <route id="menu.delete.no" path="/admin/modules/menu/delete"  methods="get">
         <default key="_controller">Menu\Controller\Admin\MenuAdminController::noAction</default>
@@ -26,35 +35,15 @@
         <default key="_controller">Menu\Controller\Admin\MenuAdminController::detailUpdateAction</default>
         <requirement key="menu_id">\d+</requirement>
     </route>
+	<route id="menu.admin.add.item" path="/admin/modules/menu/item/add/{menu_id}" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::addItemsAction</default>
+        <requirement key="menu_id">\d+</requirement>
+    </route>
     
-    <!--
-
-    if a /admin/module/menu/ route is provided, a "Configuration" button will be displayed
-    for the module in the module list. Clicking this button will invoke this route.
-
-    <route id="my_route_id" path="/admin/module/menu">
-        <default key="_controller">Menu\Full\Class\Name\Of\YourConfigurationController::methodName</default>
-    </route>
-
-    <route id="my_route_id" path="/admin/module/menu/route-name">
-        <default key="_controller">Menu\Full\Class\Name\Of\YourAdminController::methodName</default>
-    </route>
-
-    <route id="my_route_id" path="/my/route/name">
-        <default key="_controller">Menu\Full\Class\Name\Of\YourOtherController::methodName</default>
-    </route>
-
-    ...add as many routes as required.
-
-    <route>
-    ...
-    </route>
-    -->
 
     <route id="menu.adminTemplate" path="/admin/modules/menu/{template}">
         <default key="_controller">Thelia\Controller\Admin\AdminController::processTemplateAction</default>
         <requirement key="template">.*</requirement>
     </route>
    
-
 </routes>
