@@ -9,6 +9,7 @@ class MenuEvent extends ActionEvent
     protected $title;
     protected $description;
     protected $listeItem;
+    protected $listeItemContent;
 
 
     function __construct($title='', $description='')
@@ -76,6 +77,16 @@ class MenuEvent extends ActionEvent
     public function getListeItem()
     {
         return $this->listeItem;
+    }
+    public function setListeItemContent($listeItemContent)
+    {
+		$this->listeItemContent = $listeItemContent;
+        return $this;
+    }
+
+    public function getListeItemContent()
+    {
+        return $this->listeItemContent;
     }
   
     public function setMenuItem($listeItem)

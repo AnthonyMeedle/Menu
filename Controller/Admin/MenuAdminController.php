@@ -38,9 +38,9 @@ class MenuAdminController extends BaseAdminController
 		$event = new MenuEvent();
 
 		$event->setId($menu_id);
-		$event->setListeItem($_REQUEST['refs']);
+		if(!empty($_REQUEST['refs'])) $event->setListeItem($_REQUEST['refs']);
+		if(!empty($_REQUEST['idcontents'])) $event->setListeItemContent($_REQUEST['idcontents']);
 		$retour = $this->dispatch('module_menu_add_item', $event);
-
 		return $this->generateRedirect($_REQUEST['success_url']);
 	}
 	

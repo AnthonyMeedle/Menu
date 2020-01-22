@@ -59,6 +59,22 @@
 								</div>
 							</div>
 						</form>
+					<br/>
+						<form action="{url path="/admin/modules/menu/item/add/$menu_id"}" method="post">
+							<input type="hidden" name="success_url" value="{url path="/admin/modules/menu/details/$menu_id"}">
+	                        <div class="col-md-12 title title-without-tabs">
+	                            {intl l="Ajouter un ou plusieurs contenu(s) au menu"}
+	                        </div>						
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<label for="{$id}" class="control-label">{intl l="Id contenu(s)"} : </label>
+											<input type="text" class="form-control" name="idcontents" value="" required="required" placeholder="3,7,15"/>
+									</div>
+                    				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Ajouter"}</button>
+								</div>
+							</div>
+						</form>
 						<br/>	
                         <div class="col-md-12 title title-without-tabs">
                             {intl l="Gérer le menu"}

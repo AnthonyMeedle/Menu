@@ -12,6 +12,7 @@ use Menu\Model\MenuItemQuery;
 use Menu\Model\MenuItemI18n;
 use Menu\Model\MenuItemI18nQuery;
 use Thelia\Model\ProductQuery;
+use Thelia\Model\ContentQuery;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Thelia\Model\RewritingUrlQuery;
@@ -60,7 +61,6 @@ class MenuListener implements EventSubscriberInterface
 		$liste_item = explode(',',$event->getListeItem());
 		foreach($liste_item as $refProd){
 			if(null !== $product = ProductQuery::create()->filterByRef($refProd)->findOne()){
-
 				if(null === $item = MenuItemQuery::create()->filterByMenuId($event->getId())->filterByTypobj(1)->filterByObjet($product->getId())->findOne()){
 					$nbrItem++;				
 					$listeItem = new MenuItem();
@@ -68,6 +68,22 @@ class MenuListener implements EventSubscriberInterface
 			    	$listeItem->setVisible(1);
 			    	$listeItem->setTypobj(1);
 			    	$listeItem->setObjet($product->getId());
+			    	$listeItem->setPosition($nbrItem);
+			        $listeItem->save();
+				}
+			}
+		}
+		$liste_item_content = explode(',',$event->getListeItemContent());
+		foreach($liste_item_content as $idContent){
+			if(null !== $content = ContentQuery::create()->findPk($idContent)){
+
+				if(null === $item = MenuItemQuery::create()->filterByMenuId($event->getId())->filterByTypobj(3)->filterByObjet($content->getId())->findOne()){
+					$nbrItem++;				
+					$listeItem = new MenuItem();
+			    	$listeItem->setMenuId($event->getId());
+			    	$listeItem->setVisible(1);
+			    	$listeItem->setTypobj(3);
+			    	$listeItem->setObjet($content->getId());
 			    	$listeItem->setPosition($nbrItem);
 			        $listeItem->save();
 				}
