@@ -1,18 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database defaultIdMethod="native" name="thelia" namespace="Menu\Model">	
-	<table name="menu">
+<database defaultIdMethod="native" name="thelia"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="../../../core/vendor/propel/propel/resources/xsd/database.xsd" >
+	<table name="menu" namespace="Menu\Model">
 		<column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
 		<column defaultValue="0" name="visible" required="true" type="TINYINT" />
 		<column defaultValue="0" name="position" required="true" type="INTEGER" />
 		<column defaultValue="0" name="typobj" type="INTEGER" />
 		<column defaultValue="0" name="objet" type="INTEGER" />
 		<behavior name="timestampable" />
-		<behavior name="versionable">
-			<parameter name="log_created_at" value="true" />
-			<parameter name="log_created_by" value="true" />
-		</behavior>
 	</table>
-	<table name="menu_i18n">
+	<table name="menu_i18n" namespace="Menu\Model">
 		<column name="id" primaryKey="true" required="true" type="INTEGER" />
 		<column name="locale" size="5" type="VARCHAR" />
 		<column name="title" size="255" type="VARCHAR" />
@@ -23,12 +20,8 @@
 		<index name="idx_menu_has_menu_i18n">
 			<index-column name="id" />
 		</index>
-		<behavior name="versionable">
-			<parameter name="log_created_at" value="true" />
-			<parameter name="log_created_by" value="true" />
-		</behavior>
 	</table>
-	<table name="menu_item">
+	<table name="menu_item" namespace="Menu\Model">
 		<column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
 		<column name="menu_id" primaryKey="true" required="true" type="INTEGER" />
 		<column defaultValue="0" name="visible" required="true" type="TINYINT" />
@@ -42,12 +35,8 @@
 			<index-column name="menu_id" />
 		</index>
 		<behavior name="timestampable" />
-		<behavior name="versionable">
-			<parameter name="log_created_at" value="true" />
-			<parameter name="log_created_by" value="true" />
-		</behavior>
 	</table>
-	<table name="menu_item_i18n">
+	<table name="menu_item_i18n" namespace="Menu\Model">
 		<column name="id" primaryKey="true" required="true" type="INTEGER" />
 		<column name="locale" size="5" type="VARCHAR" />
 		<column name="title" size="255" type="VARCHAR" />
@@ -58,10 +47,6 @@
 		<index name="idx_menu_item_has_menu_item_i18n">
 			<index-column name="id" />
 		</index>
-		<behavior name="versionable">
-			<parameter name="log_created_at" value="true" />
-			<parameter name="log_created_by" value="true" />
-		</behavior>
 	</table>
 	
 	<external-schema filename="local/config/schema.xml" referenceOnly="true" />
