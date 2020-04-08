@@ -4,7 +4,6 @@ namespace Menu\Model;
 
 use Menu\Model\Base\MenuItemI18nQuery as BaseMenuItemI18nQuery;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'menu_item_i18n' table.
  *
@@ -18,4 +17,4 @@ use Menu\Model\Base\MenuItemI18nQuery as BaseMenuItemI18nQuery;
 class MenuItemI18nQuery extends BaseMenuItemI18nQuery
 {
 
-} // MenuItemI18nQuery
+}

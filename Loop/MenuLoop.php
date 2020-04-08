@@ -18,7 +18,6 @@ use Thelia\Type\BooleanOrBothType;
 class MenuLoop extends BaseI18nLoop implements PropelSearchLoopInterface
 {
     protected $timestampable = true;
-    protected $versionable = true;
 
     protected function getArgDefinitions()
     {
