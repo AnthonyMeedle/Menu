@@ -5,11 +5,7 @@ code d'une boucle pour afficher un menu ayant l'id 1 :
   <pre><code>
   <ul>
   {loop type="menu_item" name="menuGeneral" menu_id=1}
-    {if $TYPE && $OBJET}
-      {loop type=$TYPE name="itemmenuMenuGeneral" id=$OBJET}
-  		  ``<li><a href="{$URL}" title="{$CHAPO}">{$TITLE}</a></li>``
-  		{/loop}
-  	{/if}
+	  ``<li><a href="{$URL}" title="{$CHAPO}" class="{$ACTIVE}">{$TITLE}</a></li>``
   {/loop}
   </ul>
 <pre><code>
