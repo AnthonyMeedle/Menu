@@ -35,9 +35,9 @@ module de création de menu - glisser déposer (drag and drop) de catégorie ou/
 
 code d'une boucle pour afficher un menu ayant l'id 1 : 
   <pre><code>
-  <ul>
+  &lt;ul&gt;
   {loop type="menu_item" name="menuGeneral" menu_id=1}
-	  <li><a href="{$URL}" title="{$CHAPO}" class="{$ACTIVE}">{$TITLE}</a></li>
+	  &lt;li&gt;&lt;a href="{$URL}" title="{$CHAPO}" class="{$ACTIVE}"&gt;{$TITLE}&lt;/a&gt;&lt;/li&gt;
   {/loop}
-  </ul>
+  &lt;/ul&gt;
 <pre><code>
