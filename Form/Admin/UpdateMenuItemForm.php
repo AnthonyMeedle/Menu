@@ -4,10 +4,11 @@ namespace Menu\Form\Admin;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Form\BaseForm;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class UpdateMenuItemForm extends BaseForm
 {
-    public function getName()
+    static function getName()
     {
         return "menu_item_form";
     }
@@ -17,14 +18,14 @@ class UpdateMenuItemForm extends BaseForm
         $this->formBuilder
             ->add(
                 'menu_list',
-                'text',
+                TextType::class,
                 array(
                     'required'      => true
                 )
             )
             ->add(
                 'menu_id',
-                'text'
+                TextType::class
             );
     }
 }

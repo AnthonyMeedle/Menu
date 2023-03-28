@@ -4,10 +4,11 @@ namespace Menu\Form\Admin;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Form\BaseForm;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class DeleteMenuForm extends BaseForm
 {
-    public function getName()
+    static function getName()
     {
         return "menu_delete_form";
     }
@@ -17,7 +18,7 @@ class DeleteMenuForm extends BaseForm
         $this->formBuilder
             ->add(
                 'menu_id',
-                'text',
+                TextType::class,
                 array(
                     'required'      => true
                 )

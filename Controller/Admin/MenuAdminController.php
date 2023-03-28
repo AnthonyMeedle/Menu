@@ -23,6 +23,8 @@ use Thelia\Log\Tlog;
 use Thelia\Core\Event\ActionEvent;
 use Thelia\Controller\Admin\BaseAdminController;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 
 
 
@@ -33,18 +35,18 @@ class MenuAdminController extends BaseAdminController
     }
 	public function noAction(){}
 	
-	public function addItemsAction($menu_id){
+	public function addItemsAction(EventDispatcherInterface $eventDispatcher, $menu_id){
 		
 		$event = new MenuEvent();
 
 		$event->setId($menu_id);
 		if(!empty($_REQUEST['refs'])) $event->setListeItem($_REQUEST['refs']);
 		if(!empty($_REQUEST['idcontents'])) $event->setListeItemContent($_REQUEST['idcontents']);
-		$retour = $this->dispatch('module_menu_add_item', $event);
+		$retour = $eventDispatcher->dispatch($event, 'module_menu_add_item');
 		return $this->generateRedirect($_REQUEST['success_url']);
 	}
 	
-	public function detailUpdateAction($menu_id){
+	public function detailUpdateAction(EventDispatcherInterface $eventDispatcher, $menu_id){
 		
 		 $message = false;
 
@@ -52,7 +54,7 @@ class MenuAdminController extends BaseAdminController
             return $response;
         }
 */
-        $itemForm = new UpdateMenuItemForm($this->getRequest());
+        $itemForm = $this->createForm('menu.item.form');
 
    //     try {
             $form = $this->validateForm($itemForm);
@@ -63,7 +65,7 @@ class MenuAdminController extends BaseAdminController
 			$event->setId($data['menu_id']);
 			$event->setListeItem($data['menu_list']);
             
-            $retour = $this->dispatch('module_menu_item', $event);
+            $retour = $eventDispatcher->dispatch($event, 'module_menu_item');
             
             if (method_exists($this, 'generateSuccessRedirect')) {
                 return $this->generateSuccessRedirect($itemForm); //for 2.1
@@ -96,7 +98,7 @@ class MenuAdminController extends BaseAdminController
         );
 	}
 	
-	public function detailAction($menu_id){
+	public function detailAction(EventDispatcherInterface $eventDispatcher, $menu_id){
 		return $this->render(
           "menu_details", array(
                 'menu_id' => $menu_id
@@ -106,10 +108,10 @@ class MenuAdminController extends BaseAdminController
 	
 	
 	
-    public function deleteAction()
+    public function deleteAction(EventDispatcherInterface $eventDispatcher)
     {
     	$message = false;
-    	$deleteForm = new DeleteMenuForm($this->getRequest());
+    	$deleteForm = $this->createForm('menu.delete.form');
     	try {
             $form = $this->validateForm($deleteForm);
             $data = $form->getData($form);
@@ -117,7 +119,7 @@ class MenuAdminController extends BaseAdminController
 			$event = new MenuEvent();
 			$event->setId($data['menu_id']);
             
-            $this->dispatch('module_menu_delete', $event);
+            $eventDispatcher->dispatch($event, 'module_menu_delete');
 
             if (method_exists($this, 'generateSuccessRedirect')) {
                 //for 2.1
@@ -145,7 +147,7 @@ class MenuAdminController extends BaseAdminController
         }
     }
     
-      public function updateAction($menu_id){
+      public function updateAction(EventDispatcherInterface $eventDispatcher, $menu_id){
     	if(!empty($_REQUEST['title'])){
 	    	if(null !== $menu = MenuI18nQuery::create()->findPk($menu_id)){
 		    	$menu->setLocale('fr_FR');
@@ -156,7 +158,7 @@ class MenuAdminController extends BaseAdminController
     	return $this->generateRedirect($_REQUEST['success_url']);
     }
     
-    public function addAction()
+    public function addAction(EventDispatcherInterface $eventDispatcher)
     {
         $message = false;
 
@@ -164,7 +166,8 @@ class MenuAdminController extends BaseAdminController
             return $response;
         }
 */
-        $addForm = new AddMenuForm($this->getRequest());
+//        $addForm = new AddMenuForm($this->getRequest());
+        $addForm = $this->createForm('menu.add.form');
 
         try {
             $form = $this->validateForm($addForm);
@@ -172,7 +175,7 @@ class MenuAdminController extends BaseAdminController
 
 			$event = new MenuEvent($data['title'],$data['description']);
             
-            $retour = $this->dispatch('module_menu_add', $event);
+            $retour = $eventDispatcher->dispatch($event, 'module_menu_add');
             $url= $data['success_url'] . '/' . $event->getId();
             
 			return $this->generateRedirect($url);
@@ -194,8 +197,11 @@ class MenuAdminController extends BaseAdminController
                 ->setGeneralError($message)
             ;
         }
+		if(isset($_REQUEST['error_url'])){
+			return $this->generateRedirect($_REQUEST['error_url']);
+		}
     }
-    public function addListAction()
+    public function addListAction(EventDispatcherInterface $eventDispatcher)
     {
 		if($_REQUEST['objet']){
 			if(null === $menu = MenuQuery::create()->filterByTypobj($_REQUEST['menu_typobj'])->filterByObjet($_REQUEST['menu_objet'])->findOne()){

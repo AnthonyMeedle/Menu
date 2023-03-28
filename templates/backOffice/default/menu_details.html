@@ -11,8 +11,7 @@
 
 {block name="main-content"}
 
-<div class="taxes-rules edit-taxes-rules">
-    <div id="wrapper" class="container">
+
 		<ul class="breadcrumb">
 			<li><a href="{url path='/admin/home'}">{intl l="Home"}</a></li>
 			<li><a href="{url path='/admin/tools'}">{intl l="Outils"}</a></li>
@@ -34,9 +33,9 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group ">
-										<label for="{$id}" class="control-label">{intl l="Titre"} : </label>
+										<label for="titledetail" class="control-label">{intl l="Titre"} : </label>
 										{loop type="menu" name="menu.menu" id="$menu_id"}
-											<input type="text" class="form-control"  name="title" value="{$TITLE}" required="required"/>
+											<input type="text" class="form-control" id="titledetail"  name="title" value="{$TITLE}" required="required"/>
 										{/loop}										
 									</div>
                     				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Modifier"}</button>
@@ -52,8 +51,8 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group ">
-										<label for="{$id}" class="control-label">{intl l="Référence(s)"} : </label>
-											<input type="text" class="form-control" name="refs" value="" required="required" placeholder="REF1,REF2,REF3"/>
+										<label for="refsdetail" class="control-label">{intl l="Référence(s)"} : </label>
+											<input type="text" class="form-control" id="refsdetail" name="refs" value="" required="required" placeholder="REF1,REF2,REF3"/>
 									</div>
                     				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Ajouter"}</button>
 								</div>
@@ -68,8 +67,8 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group ">
-										<label for="{$id}" class="control-label">{intl l="Id contenu(s)"} : </label>
-											<input type="text" class="form-control" name="idcontents" value="" required="required" placeholder="3,7,15"/>
+										<label for="contenudetail" class="control-label">{intl l="Id contenu(s)"} : </label>
+											<input type="text" id="contenudetail" class="form-control" name="idcontents" value="" required="required" placeholder="3,7,15"/>
 									</div>
                     				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Ajouter"}</button>
 								</div>
@@ -179,7 +178,6 @@
 
     </div>
  
-</div>
 
 {/block}
 
@@ -197,12 +195,11 @@
 
     <script>
         $(function() {
-
+{*
             {if $taxUpdateError == true}
             $('#tax_list_update_dialog').modal();
             {/if}
-
-
+*}
             $('.js-collapse').each(function(k, v) {
                 var h = $(v).data('collapse-height');
                 if( $(v).height() > h ) {

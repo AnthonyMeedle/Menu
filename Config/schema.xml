@@ -1,7 +1,8 @@
-<database defaultIdMethod="native" name="thelia"
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="TheliaMain"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:noNamespaceSchemaLocation="../../../core/vendor/propel/propel/resources/xsd/database.xsd" >
-	<table name="menu" namespace="Menu\Model">
+          xsi:noNamespaceSchemaLocation="../../../../core/vendor/propel/propel/resources/xsd/database.xsd" >
+ 	<table name="menu" namespace="Menu\Model">
 		<column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
 		<column defaultValue="0" name="visible" required="true" type="TINYINT" />
 		<column defaultValue="0" name="position" required="true" type="INTEGER" />
