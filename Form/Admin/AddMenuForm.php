@@ -24,6 +24,14 @@ class AddMenuForm extends BaseForm
                 )
             )
             ->add(
+                'objet',
+                TextType::class
+            )
+            ->add(
+                'typobj',
+                TextType::class
+            )
+            ->add(
                 'description',
                 TextType::class
             );

@@ -3,60 +3,27 @@
 <config xmlns="http://thelia.net/schema/dic/config"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
-
     <loops>
-        <!-- sample definition
-        <loop name="MySuperLoop" class="Menu\Loop\MySuperLoop" />
-        -->
         <loop name="menu" class="Menu\Loop\MenuLoop" />
         <loop name="menu_item" class="Menu\Loop\MenuItemLoop" />
-        
     </loops>
-
     <forms>
         <form name="menu.add.form" class="Menu\Form\Admin\AddMenuForm" />
         <form name="menu.delete.form" class="Menu\Form\Admin\DeleteMenuForm" />
+        <form name="menu.delete.item" class="Menu\Form\Admin\DeleteItemForm" />
         <form name="menu.item.form" class="Menu\Form\Admin\UpdateMenuItemForm" />
-        
+        <form name="menu.item.details" class="Menu\Form\Admin\UpdateMenuItemDetailsForm" />
     </forms>
-
     <commands>
-        <!--
-        <command class="Menu\Command\MySuperCommand" />
-        -->
     </commands>
-
-
     <services>
 		<service id="menu.action" class="Menu\EventListeners\MenuListener">
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>
-
-
-    <!--
-    <hooks>
-        <hook id="menu.hook" class="Menu\Hook\MySuperHook" scope="request">
-            <tag name="hook.event_listener" event="main.body.bottom" type="front|back|pdf|email" method="onMainBodyBottom" />
-        </hook>
-    </hooks>
-    -->
 	<hooks>
 		<hook id="menu.hook.admin.tools" class="Menu\Hook\Admin\MenuTools" scope="request">
-		<!--	<tag name="hook.event_listener" event="main.top-menu-tools" type="back" />-->
 			<tag name="hook.event_listener" event="main.top-menu-tools" type="back" method="onMainTopMenuToolsContents" />
 		</hook>   
 	</hooks>
-
-    <!--
-    <exports>
-
-    </exports>
-    -->
-
-    <!--
-    <imports>
-
-    </imports>
-    -->
 </config>

@@ -26,7 +26,9 @@ class MenuListener implements EventSubscriberInterface
             'module_menu_add' => array('addMenu', 128),
             'module_menu_add_item' => array('addMenuItem', 128),
             'module_menu_delete' => array('deleteMenu', 128),
-            'module_menu_item' => array('itemMenu',128)
+            'module_menu_item_delete' => array('deleteItem', 128),
+            'module_menu_item' => array('itemMenu',128),
+            'module_menu_item_details' => array('itemDetails',128)
         );
     }
 /*    public static function getSubscribedEvents()
@@ -36,7 +38,27 @@ class MenuListener implements EventSubscriberInterface
         ];
     }*/
     
-    
+	public function itemDetails(MenuEvent $event)
+    {
+	 	if (null !== $menuItem = MenuItemQuery::create()->findPk($event->getId())) {
+			$menuItem
+				->setLocale($event->getLocale())
+				->setTitle($event->getTitle())
+				->setChapo($event->getChapo())
+				->setUrl($event->getUrl())
+				->setCssclass($event->getCssclass())
+				->setTargetblank($event->getTarget())
+				->setSousmenu($event->getSousmenu())
+				->setIcone($event->getIcone())
+				->save();
+		}
+    }
+	public function deleteItem(MenuEvent $event)
+    {
+     if (null !== $menuItem = MenuItemQuery::create()->findPk($event->getId())) {
+            $menuItem->delete();
+        }
+    }
 	public function deleteMenu(MenuEvent $event)
     {
 	/*	$menu = MenuQuery::create()
@@ -67,8 +89,10 @@ class MenuListener implements EventSubscriberInterface
 			    	$listeItem->setMenuId($event->getId());
 			    	$listeItem->setVisible(1);
 			    	$listeItem->setTypobj(1);
+	    			$listeItem->setMenuParent($event->getMenuParent());
 			    	$listeItem->setObjet($product->getId());
 			    	$listeItem->setPosition($nbrItem);
+			    	$listeItem->setLocale($event->getLocale());
 			        $listeItem->save();
 				}
 			}
@@ -83,12 +107,30 @@ class MenuListener implements EventSubscriberInterface
 			    	$listeItem->setMenuId($event->getId());
 			    	$listeItem->setVisible(1);
 			    	$listeItem->setTypobj(3);
+	    			$listeItem->setMenuParent($event->getMenuParent());
 			    	$listeItem->setObjet($content->getId());
 			    	$listeItem->setPosition($nbrItem);
+			    	$listeItem->setLocale($event->getLocale());
 			        $listeItem->save();
 				}
 			}
 		}
+		$item_free = trim($event->getItemTitle());
+		if($item_free){
+			$nbrItem++;				
+			$listeItem = new MenuItem();
+			$listeItem->setMenuId($event->getId());
+			$listeItem->setVisible(1);
+			$listeItem->setTypobj(4);
+			$listeItem->setObjet(0);
+			$listeItem->setMenuParent($event->getMenuParent());
+			$listeItem->setPosition($nbrItem);
+			$listeItem->setLocale($event->getLocale());
+			$listeItem->setTitle($item_free);
+			$listeItem->save();
+			$listeItem->setObjet($listeItem->getId())->save();
+		}
+		
     } 
     
     public function itemMenu(MenuEvent $event)
@@ -96,24 +138,26 @@ class MenuListener implements EventSubscriberInterface
 
 		$liste_item = json_decode($event->getListeItem());
 		$compteur=0;
-		$item = MenuItemQuery::create()->filterByMenuId($event->getId())->find();
-	    $item->delete();
+//		$item = MenuItemQuery::create()->filterByMenuId($event->getId())->find();
+//	    $item->delete();
 		foreach($liste_item[0] as $idobj){
 			$typObj = explode('_', $idobj);
 			$compteur++;
-	    	$menuItem = new MenuItem();
+			if(isset($typObj[2])){
+				if(null === $menuItem = MenuItemQuery::create()->findPk($typObj[2])){
+					$menuItem = new MenuItem();
+				}
+			}else{
+				$menuItem = new MenuItem();
+			}
 	    	$menuItem->setMenuId($event->getId());
 	    	$menuItem->setVisible(1);
 	    	$menuItem->setTypobj($typObj[0]);
 	    	$menuItem->setObjet($typObj[1]);
+	    	$menuItem->setMenuParent($event->getMenuParent());
 	    	$menuItem->setPosition($compteur);
+		//	$menuItem->setLocale($event->getLocale());
 	        $menuItem->save();
-	        /*
-	        $menuItem_i18n = new MenuItemI18n();
-	        $menuItem_i18n->setId($menuItem->getId());
-	        $menuItem_i18n->setLocale('fr_FR');
-	        $menuItem_i18n->save();
-	        */
 		}
 
     }
@@ -122,15 +166,15 @@ class MenuListener implements EventSubscriberInterface
     {
 
     	$menu = new Menu();
+        
+        $menu->setLocale('fr_FR');
+        $menu->setVisible(1);
+        $menu->setTitle($event->getTitle());
+        $menu->setDescription($event->getDescription());
+        $menu->setObjet($event->getItemid());
+        $menu->setTypobj($event->getTypobjet());
+		
         $menu->save();
-        
-        $menu_i18n = new MenuI18n();
-        $menu_i18n->setId($menu->getId());
-        $menu_i18n->setTitle($event->getTitle());
-        $menu_i18n->setDescription($event->getDescription());
-        $menu_i18n->setLocale('fr_FR');
-        $menu_i18n->save();
-        
         $event->setId($menu->getId());
     }
 }

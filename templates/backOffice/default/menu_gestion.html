@@ -7,53 +7,55 @@
 {block name="page-title"}{intl l='Comptes espace-pro'}{/block}
 
 {block name="main-content"}
-
-
-<div class="clearfix">
-	<ul class="breadcrumb pull-left">
-		<li><a href="{url path='/admin/home'}">{intl l="Home"}</a></li>
-		<li><a href="{url path='/admin/tools'}">{intl l="Outils"}</a></li>
-		<li>{intl l="Menu"}</li>
-	</ul>
-</div>
-
-<div class="general-block-decorator">
-	<div class="table-responsive">
-		<table class="table table-striped table-condensed" id="category_list">
-			<caption>
-				{intl l="Liste des Menu"}
-				 <a class="btn btn-default btn-primary action-btn" title="{intl l="Ajouter un menu"}" href="#menu_create_dialog" data-toggle="modal">
-				<span class="glyphicon glyphicon-plus-sign"></span>
-				</a>
-
-			</caption>
-			<thead>
-				<tr>
-					<th class="col-md-3">{intl l="Nom"}</th>
-					<th class="col-md-5">{intl l="Description"}</th>
-					<th class="col-md-1">{intl l="Actions"}</th>
-				</tr>
-			</thead>
-			<tbody>
-				{loop type="menu" name="menu.liste"}
-					<tr>
-						<td>{$TITLE}</td>
-						<td>{$DESCRIPTION}</td>
-						<td>
-							<div class="btn-group">
-									<a class="btn btn-default btn-xs" title="Modifier ce menu" href="{url path="/admin/modules/menu/details/{$ID}"}"><span class="glyphicon glyphicon-edit"></span></a>
-									<a class="btn btn-default btn-xs js-delete-menu" title="{intl l="Supprimer ce menu"}" href="#menu_delete_dialog" data-id="{$ID}" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a>
-							</div>
-						</td>
-					</tr>
-				 {/loop}
-			</tbody>
-		</table>
+<div class="modules">
+	<div id="wrapper" class="container">
+		<div class="clearfix">
+			<ul class="breadcrumb pull-left">
+				<li><a href="{url path='/admin/home'}">{intl l="Home"}</a></li>
+				<li><a href="{url path='/admin/tools'}">{intl l="Outils"}</a></li>
+				<li>{intl l="Menu"}</li>
+			</ul>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="general-block-decorator">
+					<div class="table-responsive">
+						<table class="table table-striped table-condensed" id="category_list">
+							<caption>
+								{intl l="Liste des Menu"}
+								 <a class="btn btn-default btn-primary action-btn" title="{intl l="Ajouter un menu"}" href="#menu_create_dialog" data-toggle="modal">
+								<span class="glyphicon glyphicon-plus-sign"></span>
+								</a>
+								
+							</caption>
+							<thead>
+								<tr>
+									<th class="col-md-3">{intl l="Nom"}</th>
+									<th class="col-md-5">{intl l="Description"}</th>
+									<th class="col-md-1">{intl l="Actions"}</th>
+								</tr>
+							</thead>
+							<tbody> 
+								{loop type="menu" name="menu.liste" typobjex="5"}
+                                    <tr>
+                                        <td>{$TITLE}</td>
+                                        <td>{$DESCRIPTION}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                    <a class="btn btn-default btn-xs" title="Modifier ce menu" href="{url path="/admin/modules/menu/details/{$ID}"}"><span class="glyphicon glyphicon-edit"></span></a>
+                                                    <a class="btn btn-default btn-xs js-delete-menu" title="{intl l="Supprimer ce menu"}" href="#menu_delete_dialog" data-id="{$ID}" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                 {/loop}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
-			
-
-
 <div class="modal fade" id="menu_delete_dialog" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -69,9 +71,6 @@
             		{form_field form=$form field='success_url'}
             		<input type="hidden" name="{$name}" value="{url path='/admin/modules/menu/menu_gestion'}">
 			        {/form_field}
-					
-            		<input type="hidden" name="error_url" value="{url path='/admin/modules/menu/menu_gestion'}">
-					
 	                {intl l="Voulez-vous vraiment supprimer ce menu ?"}
 	                {form_field form=$form field='menu_id'}
                     <input type="hidden" name="{$name}" id="menu_delete_id" value="" />
@@ -93,40 +92,39 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h3>{intl l="Créer un nouveau menu"}</h3>
             </div>
+            {form name="menu.add.form"}
+            <form method="POST" action="{url path='/admin/modules/menu/add'}" >
+                <div class="modal-body">
+				 	{form_hidden_fields form=$form}
 
-			{form name="menu.add.form"}
-			<form method="POST" action="{url path='/admin/modules/menu/add'}" >
-				<div class="modal-body">
-					{form_hidden_fields form=$form}
+            		{form_field form=$form field='success_url'}
+            		<input type="hidden" name="{$name}" value="{url path='/admin/modules/menu/details'}">
+			        {/form_field}
 
-					{form_field form=$form field='success_url'}
-					<input type="hidden" name="{$name}" value="{url path='/admin/modules/menu/details'}">
-					{/form_field}
-            		<input type="hidden" name="error_url" value="{url path='/admin/modules/menu/menu_gestion'}">
 				{form_field form=$form field='title'}
-				<div class="form-group ">
-					<label for="titleadd" class="control-label">{intl l="Titre"} : </label>
-					<input type="text" id="titleadd" name="{$name}" required="required" title="{intl l="Titre"}" placeholder="{intl l="Titre"}" class="form-control" value="{$value}">
-				</div>
-				{/form_field}
-				{form_field form=$form field='description'}
-				<div class="form-group ">
-					<label for="descriptionadd" class="control-label">
-						{intl l="Description détaillée"} :
-						<span class="label-help-block">{intl l="La description détaillée."}</span>
-					</label>
-					<textarea name="{$name}" id="descriptionadd" rows="10" class="form-control wysiwyg">{$value}</textarea>
-				</div>
-			   {/form_field}
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span> {intl l="Annuler"}</button>
-					<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Créer"}</button>
-				</div>
-			</form>
-			{/form}
+	            <div class="form-group ">
+	                <label for="titlemenu" class="control-label">{intl l="Titre"} : </label>
+	                <input type="text" id="titlemenu" name="{$name}" required="required" title="{intl l="Titre"}" placeholder="{intl l="Titre"}" class="form-control" value="{$value}">
+	            </div>
+	            {/form_field}
+	            {form_field form=$form field='description'}
+	            <div class="form-group ">
+	                <label for="descmenu" class="control-label">
+	                    {intl l="Description détaillée"} :
+	                    <span class="label-help-block">{intl l="La description détaillée."}</span>
+	                </label>
+	                <textarea name="{$name}" id="descmenu" rows="10" class="form-control wysiwyg">{$value}</textarea>
+	            </div>
+	           {/form_field}
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span> {intl l="Annuler"}</button>
+                    <button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Créer"}</button>
+	            </div>
+            </form>
+            {/form}
         </div>
     </div>
+</div>
 </div>
 
 

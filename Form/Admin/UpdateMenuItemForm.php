@@ -18,10 +18,11 @@ class UpdateMenuItemForm extends BaseForm
         $this->formBuilder
             ->add(
                 'menu_list',
-                TextType::class,
-                array(
-                    'required'      => true
-                )
+                TextType::class
+            )
+            ->add(
+                'menu_parent',
+                TextType::class
             )
             ->add(
                 'menu_id',

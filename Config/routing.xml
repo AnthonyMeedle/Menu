@@ -17,14 +17,21 @@
         <default key="_controller">Menu\Controller\Admin\MenuAdminController::updateAction</default>
         <requirement key="menu_id">\d+</requirement>
     </route>
-    
-    
+    <route id="menu.update.item" path="/admin/modules/menu/update/item" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::detailItemUpdateAction</default>
+    </route>
+    <route id="menu.item.load" path="/admin/modules/menu/load/item" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::loadItemAction</default>
+    </route>
     
     <route id="menu.delete.no" path="/admin/modules/menu/delete"  methods="get">
         <default key="_controller">Menu\Controller\Admin\MenuAdminController::noAction</default>
     </route>
     <route id="menu.delete" path="/admin/modules/menu/delete" methods="post">
         <default key="_controller">Menu\Controller\Admin\MenuAdminController::deleteAction</default>
+    </route>
+    <route id="menu.delete.item" path="/admin/modules/menu/item/delete" methods="post">
+        <default key="_controller">Menu\Controller\Admin\MenuAdminController::itemDeleteAction</default>
     </route>
     
 	<route id="menu.admin.details" path="/admin/modules/menu/details/{menu_id}" methods="get">

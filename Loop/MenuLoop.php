@@ -24,7 +24,9 @@ class MenuLoop extends BaseI18nLoop implements PropelSearchLoopInterface
         return new ArgumentCollection(
             Argument::createIntListTypeArgument('id'),
             Argument::createIntListTypeArgument('typobj'),
+            Argument::createIntListTypeArgument('typobjex'),
             Argument::createIntListTypeArgument('objet'),
+            Argument::createAnyTypeArgument('locale'),
             Argument::createBooleanOrBothTypeArgument('visible')
         );
     }
@@ -37,7 +39,6 @@ class MenuLoop extends BaseI18nLoop implements PropelSearchLoopInterface
     public function buildModelCriteria()
     {
         $search = MenuQuery::create();
-		$this->configureI18nProcessing($search, array('TITLE', 'CHAPO', 'DESCRIPTION', 'POSTSCRIPTUM'));
 		
         $id = $this->getId();
         if ($id) {
@@ -49,6 +50,11 @@ class MenuLoop extends BaseI18nLoop implements PropelSearchLoopInterface
             $search->filterByTypobj($typobj, Criteria::IN);
         }
 		
+        $typobjex = $this->getTypobjex();
+        if ($typobjex !== null) {
+         //   $search->filterByTypobj($typobjex, Criteria::NOT_IN);
+        }
+		
         $objet = $this->getObjet();
         if ($objet) {
             $search->filterByObjet($objet, Criteria::IN);
@@ -56,7 +62,7 @@ class MenuLoop extends BaseI18nLoop implements PropelSearchLoopInterface
 
 
         $visible = $this->getVisible();
-        if ($visible !== BooleanOrBothType::ANY) $search->filterByVisible($visible ? 1 : 0);
+        if ($visible !== BooleanOrBothType::ANY) $search->filterByVisible($visible ? 0 : 1);
 
 	//	$critere->joinMenu('menu_i18n', Criteria::INNER_JOIN)->where('`menu_i18n' . $idcat . '`.category_id IN ('.$liste.')');
 	
@@ -73,11 +79,22 @@ class MenuLoop extends BaseI18nLoop implements PropelSearchLoopInterface
     {
         foreach ($loopResult->getResultDataCollection() as $menu) {
             $loopResultRow = new LoopResultRow($menu);
-
-            $loopResultRow
+			
+			$locale = $this->getLocale();
+			if($locale){
+				$menu->setLocale($locale);
+			}else{
+				$locale = $this->getCurrentRequest()->getSession()->getLang()->getLocale();
+				$menu->setLocale($locale);	
+			}
+            
+			
+            $loopResultRow 
                 ->set('ID', $menu->getId())
-                ->set('TITLE', $menu->getVirtualColumn('i18n_TITLE'))
-                ->set('DESCRIPTION', $menu->getVirtualColumn('i18n_DESCRIPTION'))
+                ->set('TYPOBJ', $menu->getTypobj())
+                ->set('OBJET', $menu->getObjet())
+                ->set('TITLE', $menu->getTitle())
+                ->set('DESCRIPTION', $menu->getDescription())
                 ->set('VISIBLE', $menu->getVisible())
 
             ;

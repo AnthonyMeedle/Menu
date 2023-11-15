@@ -11,13 +11,30 @@
 
 {block name="main-content"}
 
-
+<div class="taxes-rules edit-taxes-rules">
+    <div id="wrapper" class="container">
 		<ul class="breadcrumb">
 			<li><a href="{url path='/admin/home'}">{intl l="Home"}</a></li>
 			<li><a href="{url path='/admin/tools'}">{intl l="Outils"}</a></li>
 			<li><a href="{url path='/admin/modules/menu/menu_gestion'}">{intl l="Menu"}</a></li>
 			<li>{intl l="Détails"}</li>
 		</ul>
+		
+		<ul class="nav nav-pills">
+		{loop name="lang_list" type="lang" backend_context="1"}
+		    <li {if $ID == $edit_language_id}class="active"{/if}>
+                {if isset($current_tab) && $current_tab}
+                    {$lang_url = {url path={$page_url|default:$current_url nofilter} edit_language_id=$ID current_tab=$current_tab}}
+                {else}
+                    {$lang_url = {url path={$page_url|default:$current_url nofilter} edit_language_id=$ID}}
+                {/if}
+		        <a class="language-change-button" data-language-id="{$ID}" href="{$lang_url nofilter}#advanced-description" title="{intl l='Edit information in %lng' lng={$TITLE}}">
+		            <img src="{image file="assets/img/flags/$CODE.png"}" alt=$TITLE />
+		        </a>
+		    </li>
+		    {/loop}
+		</ul>
+		{$menu_parent=''}
 
         <div class="row">
             <div class="col-md-12 general-block-decorator clearfix">
@@ -25,7 +42,17 @@
           
                 <div class="tab-content">
                     
-						<form action="{url path="/admin/modules/menu/update/$menu_id"}" method="post">
+					<div class="row"> 
+						{loop type="menu" name="menu.menu" id="$menu_id" locale="{$edit_language_locale}"} 
+						{if $TYPOBJ == 5}
+						{$menu_parent=$OBJET}
+						<div class="col-md-6 mb-4">
+							{loop type="menu_item" name="infoMenu" id=$OBJET locale="{$edit_language_locale}"}
+								<h2><a href="{url path="/admin/modules/menu/details/{$MENU_ID}"}">{$TYPE} - {$TITLE}</a></h2>
+							{/loop}
+						</div>
+						{else}
+						<form action="{url path="/admin/modules/menu/update/$menu_id"}" method="post" class="col-md-6 mb-4">
 							<input type="hidden" name="success_url" value="{url path="/admin/modules/menu/details/$menu_id"}">
 	                        <div class="col-md-12 title title-without-tabs">
 	                            {intl l="Modifier le titre du menu"}
@@ -33,47 +60,72 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group ">
-										<label for="titledetail" class="control-label">{intl l="Titre"} : </label>
-										{loop type="menu" name="menu.menu" id="$menu_id"}
-											<input type="text" class="form-control" id="titledetail"  name="title" value="{$TITLE}" required="required"/>
-										{/loop}										
+										<label for="fgtitle" class="control-label">{intl l="Titre"} : </label>
+										<input type="text" class="form-control" id="fgtitle"  name="title" value="{$TITLE}" required="required"/>
 									</div>
                     				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Modifier"}</button>
 								</div>
 							</div>
+							<br>
 						</form>
-						<br/>
-						<form action="{url path="/admin/modules/menu/item/add/$menu_id"}" method="post">
+						{/if}
+						{/loop}
+
+						<form action="{url path="/admin/modules/menu/item/add/$menu_id"}" method="post" class="col-md-6">
 							<input type="hidden" name="success_url" value="{url path="/admin/modules/menu/details/$menu_id"}">
+							<input type="hidden" name="menu_parent" value="{$menu_parent}">
+
 	                        <div class="col-md-12 title title-without-tabs">
-	                            {intl l="Ajouter une ou plusieurs références au menu"}
+	                            {intl l="Ajouter une ou plusieurs références produit au menu"}
 	                        </div>						
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group ">
-										<label for="refsdetail" class="control-label">{intl l="Référence(s)"} : </label>
-											<input type="text" class="form-control" id="refsdetail" name="refs" value="" required="required" placeholder="REF1,REF2,REF3"/>
+										<label for="fref" class="control-label">{intl l="Référence(s)"} : </label>
+											<input type="text" class="form-control" id="fref" name="refs" value="" required="required" placeholder="REF1,REF2,REF3"/>
 									</div>
                     				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Ajouter"}</button>
 								</div>
 							</div>
+							<br>
 						</form>
-					<br/>
-						<form action="{url path="/admin/modules/menu/item/add/$menu_id"}" method="post">
+
+						<form action="{url path="/admin/modules/menu/item/add/$menu_id"}" method="post" class="col-md-6">
 							<input type="hidden" name="success_url" value="{url path="/admin/modules/menu/details/$menu_id"}">
+							<input type="hidden" name="menu_parent" value="{$menu_parent}">
+	                        <div class="col-md-12 title title-without-tabs">
+	                            {intl l="Ajouter un lien \"libre\" au menu"}
+	                        </div>						
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<label for="itemtitle" class="control-label">{intl l="Titre du lien"} : </label>
+										<input type="text" class="form-control" id="itemtitle" name="itemtitle" value="" required="required" placeholder="Nom du lien"/>
+									</div>
+                    				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Ajouter"}</button>
+								</div>
+							</div>
+							<br>
+						</form>
+
+						<form action="{url path="/admin/modules/menu/item/add/$menu_id"}" method="post" class="col-md-6">
+							<input type="hidden" name="success_url" value="{url path="/admin/modules/menu/details/$menu_id"}">
+							<input type="hidden" name="menu_parent" value="{$menu_parent}">
 	                        <div class="col-md-12 title title-without-tabs">
 	                            {intl l="Ajouter un ou plusieurs contenu(s) au menu"}
 	                        </div>						
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group ">
-										<label for="contenudetail" class="control-label">{intl l="Id contenu(s)"} : </label>
-											<input type="text" id="contenudetail" class="form-control" name="idcontents" value="" required="required" placeholder="3,7,15"/>
+										<label for="idcontents" class="control-label">{intl l="Id contenu(s)"} : </label>
+											<input type="text" class="form-control" id="idcontents" name="idcontents" value="" required="required" placeholder="3,7,15"/>
 									</div>
                     				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Ajouter"}</button>
 								</div>
 							</div>
+							<br>
 						</form>
+					</div>
 						<br/>	
                         <div class="col-md-12 title title-without-tabs">
                             {intl l="Gérer le menu"}
@@ -81,7 +133,6 @@
 
 						<div class="row">
                             <div class="col-md-6" style="position: sticky; top: 0;">
-
                                 <div id="panel" class="panel panel-default place">
                                     <div class="panel-heading">
                                         <h3 class="panel-title">{intl l="Gérer les liens du menu et leur ordre d'affichage"}</h3>
@@ -93,21 +144,18 @@
                                                 <span class="glyphicon glyphicon-plus"></span>
                                                 <span class="message">{intl l="Déposer un lien ici afin de l'ajouter au menu"}</span>
                                             </p>
-                                            
-                                            {loop type="menu_item" name="lienDuMenu" menu_id=$menu_id}
-	                                            {if $TYPE && $OBJET}
-													{$typid=$TYPE_ID}
-													{loop type=$TYPE name="itemmenu" id=$OBJET}
-														<div class="drag" data-id="{$ID}" data-cpfc="{$typid}">{$TYPE} - {$TITLE}</div>
+                                            {loop type="menu_item" name="lienDuMenu" menu_id=$menu_id locale="{$edit_language_locale}"}
+												<div class="drag row" data-itemid="{$ITEM_ID}" data-objetid="{$OBJET_ID}" data-cpfc="{$TYPE_ID}"><span class="col-md-9">{$TYPE} - {$TITLE}</span>
+
+													<a title="Editer ce lien" href="#menu_edit_item_dialog" class="btn btn-info btn-responsive col-md-1 text-right btn-action-edit" data-toggle="modal" data-itemid="{$ITEM_ID}"><i class="glyphicon glyphicon-edit"></i></a> 
+													<a title="Supprimer ce lien" href="#menu_delete_dialog" class="btn btn-danger btn-responsive col-md-1 text-right btn-action-delete" data-toggle="modal" data-itemid="{$ITEM_ID}"><i class="glyphicon glyphicon-trash"></i></a>
+													{loop type="menu" name="menu.liste" typobj="5" objet=$ITEM_ID}
+													<a title="Parcourir ce menu" href="{url path="/admin/modules/menu/details/{$ID}"}" class="btn btn-primary btn-responsive col-md-1"><i class="glyphicon glyphicon-folder-open"></i></a>
 													{/loop}
-												{/if}
+											</div>
 											{/loop}
-                                            
-                                        </div>                                
-										
+                                        </div>
 									</div>
-
-
 	                            </div>
 							   {form name="menu.item.form"}
 								<form method="post" action="{url path="/admin/modules/menu/details/$menu_id"}" id="menuItemForm">
@@ -119,13 +167,15 @@
 									{form_field form=$form field='menu_id'}
 										<input type="hidden" name="{$name}" value="{$menu_id}">
 									{/form_field}
+									{form_field form=$form field='menu_parent'}
+										<input type="hidden" name="{$name}" value="{$menu_parent}">
+									{/form_field}
 									{form_field form=$form field='menu_list'}
 										<input type="hidden" id="menu_list" name="{$name}" value="">
 									{/form_field}
 								</form>
 								{/form}
     	                        <a href="#menu_list_update_dialog" id="apply-item-menu" class="btn btn-default btn-primary btn-block"><span class="glyphicon glyphicon-check"></span> {intl l="Apply"}</a>
-	
     	                    </div>
         	                <div class="col-md-6">
 
@@ -134,39 +184,33 @@
                                     <h3 class="panel-title">{intl l="Category"}</h3>
                                 </div>
                                 <div class="panel-body">
-                                    {loop type="category" name="catgory-list" parent="0" exclude_category_menu=$ID}
-                                        <div class="draggable" data-id="{$ID}" data-cpfc="0">{$TITLE}</div>
+                                    {loop type="category" name="catgory-list-1" parent="0" exclude_category_menu=$ID}
+                                        <div class="draggable" data-objetid="{$ID}" data-itemid="" data-cpfc="0">{$TITLE}</div>
         
-                                        {loop type="category" name="sous-catgory-list" parent=$ID}
-    	                                    <div class="draggable" data-id="{$ID}" data-cpfc="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$TITLE}</div>
+                                        {loop type="category" name="catgory-list-2" parent=$ID}
+    	                                    <div class="draggable" data-objetid="{$ID}" data-itemid="" data-cpfc="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$TITLE}</div>
+                                            
+                                            {loop type="category" name="catgory-list-3" parent=$ID}
+                                                <div class="draggable" data-objetid="{$ID}" data-itemid="" data-cpfc="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$TITLE}</div>
+                                            {/loop}
 	                                    {/loop}
                                     {/loop}
                                 </div>
-                                <div class="panel-footer droppable remove-from-group">
-                                    <p class="drop-message">
-                                        <span class="glyphicon glyphicon-minus"></span>
-                                        <span class="message">{intl l="Déposer un lien ici pour l'enlever du menu"}</span>
-                                    </p>
-                                </div>
+                              
                                 <br />
                                 <div class="panel-heading">
                                     <h3 class="panel-title">{intl l="Folder"}</h3>
                                 </div>
                                 <div class="panel-body">
                                     {loop type="folder" name="folder-list" parent="0" exclude_folder_menu=$ID}
-                                        <div class="draggable" data-id="{$ID}" data-cpfc="2">{$TITLE}</div>
+                                        <div class="draggable" data-objetid="{$ID}" data-itemid="" data-cpfc="2">{$TITLE}</div>
         
                                         {loop type="folder" name="sous-folder-list" parent=$ID}
-    	                                    <div class="draggable" data-id="{$ID}" data-cpfc="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$TITLE}</div>
+    	                                    <div class="draggable" data-objetid="{$ID}" data-itemid="" data-cpfc="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$TITLE}</div>
 	                                    {/loop}
                                     {/loop}
                                 </div>
-                                <div class="panel-footer droppable remove-from-group">
-                                    <p class="drop-message">
-                                        <span class="glyphicon glyphicon-minus"></span>
-                                        <span class="message">{intl l="Déposer un lien ici pour l'enlever du menu"}</span>
-                                    </p>
-                                </div>
+                                
                             </div>
 
                         </div>
@@ -178,7 +222,135 @@
 
     </div>
  
+</div>
+</div>
+<div class="modal fade" id="menu_delete_dialog" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>{intl l="Supprimer le menu"}</h3>
+            </div>
+            {form name="menu.delete.item"}
+            <form method="POST" action="{url path='/admin/modules/menu/item/delete'}" id="menu_delete_dialog_form">
+	            <div class="modal-body">
+	            	{form_hidden_fields form=$form}
+	            	
+            		{form_field form=$form field='success_url'}
+            		<input type="hidden" name="{$name}" value="{url path="/admin/modules/menu/details/$menu_id"}">
+			        {/form_field}
+	                {intl l="Voulez-vous vraiment supprimer ce lien du menu ?"}
+	                {form_field form=$form field='item_id'}
+                    <input type="hidden" name="{$name}" id="menu_item_delete_id" value="" />
+                    {/form_field}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span> {intl l="Non"}</button>
+                    <button type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Oui"}</button>
+                </div>
+            </form>
+            {/form}
+        </div>
+    </div>
+</div>
+<div class="modal fade " id="menu_edit_item_dialog" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>{intl l="Éditer ce lien"}</h3>
+            </div>
+            {form name="menu.item.details"}
+            <form method="POST" action="{url path="/admin/modules/menu/update/item"}" >
+                <div class="modal-body">
+				 	{form_hidden_fields form=$form}
 
+            		{form_field form=$form field='success_url'}
+            		<input type="hidden" name="{$name}" value="{url path="/admin/modules/menu/details/$menu_id"}">
+			        {/form_field}
+					
+					{form_field form=$form field='item_id'}
+						<input type="hidden" name="{$name}" id="md_item_id" value="{if isset($item_id)}{$item_id}{/if}">
+					{/form_field}
+					
+				{form_field form=$form field='title'}
+	            <div class="form-group ">
+	                <label for="dmtitre" class="control-label">{intl l="Titre"} : </label>
+	                <input type="text" id="dmtitre" name="{$name}" title="{intl l="Titre"}" placeholder="{intl l="Titre"}" class="form-control" value="{$value}">
+	            </div>
+	            {/form_field}
+				{form_field form=$form field='chapo'}
+	            <div class="form-group ">
+	                <label for="dmchapo" class="control-label">{intl l="Attribut title"} : </label>
+	                <input type="text" id="dmchapo" name="{$name}"  placeholder="{intl l="description du lien"}" class="form-control" value="{$value}">
+	            </div>
+	            {/form_field}
+	            
+				{form_field form=$form field='url'}
+	            <div class="form-group ">
+	                <label for="dmurl" class="control-label">{intl l="URL"} : </label>
+	                <input type="text" id="dmurl" name="{$name}"  placeholder="{intl l="https://url.externe.fr"}" class="form-control" value="{$value}">
+	            </div>
+	            {/form_field}
+					
+				{form_field form=$form field='cssclass'}
+	            <div class="form-group ">
+	                <label for="dmclass" class="control-label">{intl l="Class"} : </label>
+	                <input type="text" id="dmclass" name="{$name}" placeholder="{intl l="class css"}" class="form-control" value="{$value}">
+	            </div>
+	            {/form_field}
+	            
+				{form_field form=$form field='targetblank'}
+	            <div class="form-group ">
+	                <label for="dmtb" class="control-label">{intl l="target blank"} : </label>
+	                <input type="checkbox" id="dmtb" name="{$name}" class="form-control" value="{$value}">
+	            </div>
+	            {/form_field}
+	            
+				{form_field form=$form field='sousmenu'}
+	            <div class="form-group ">
+					<label for="dmsm" class="control-label">{intl l="Sous menu"} : </label>
+	                <input type="checkbox" id="dmsm" name="{$name}" class="form-control" value="{$value}">
+	            </div>
+	            {/form_field}
+	            
+				{form_field form=$form field='icone'}
+			 	<div class="form-group ">
+					<label for="dmicone" class="control-label">{intl l="Icone"} : </label>
+					<input type="text" id="dmicone" name="{$name}" placeholder="{intl l="fa-icone"}" class="form-control" value="{$value}">
+				</div>
+	            {/form_field}
+	            
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span> {intl l="Annuler"}</button>
+                    <button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Valider"}</button>
+	            </div>
+            </form>
+            {/form}
+				
+		  {form name="menu.add.form"}
+            <form method="POST" action="{url path='/admin/modules/menu/add'}" >
+                <div class="modal-body">
+				 	{form_hidden_fields form=$form}
+
+					{form_field form=$form field='success_url'}
+					<input type="hidden" name="{$name}" value="{url path='/admin/modules/menu/details'}">
+					{/form_field}
+					{form_field form=$form field='typobj'}
+					<input type="hidden" name="{$name}" value="5">
+					{/form_field}
+					{form_field form=$form field='objet'}
+					<input type="hidden" name="{$name}" id="sousmenuiditem" value="">
+					{/form_field}
+				<button  type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-check"></span> {intl l="Créer un sous menu personnalisé"}</button>
+				</div>
+            </form>
+		{/form}
+				
+        </div>
+    </div>
+</div>
 {/block}
 
 {block name="javascript-initialization"}
@@ -195,11 +367,8 @@
 
     <script>
         $(function() {
-{*
-            {if $taxUpdateError == true}
-            $('#tax_list_update_dialog').modal();
-            {/if}
-*}
+
+
             $('.js-collapse').each(function(k, v) {
                 var h = $(v).data('collapse-height');
                 if( $(v).height() > h ) {
@@ -239,7 +408,7 @@
 
                     $('.drag', $this).each(function(j){
                         menuItem[index][j] = [];
-                        menuItem[index][j] = $(this).data('cpfc')+'_'+$(this).data('id'); // retrieve with data
+                        menuItem[index][j] = $(this).data('cpfc')+'_'+$(this).data('objetid')+'_'+$(this).data('itemid'); // retrieve with data
                     });
                 });
 
@@ -294,7 +463,7 @@
                         }
                     }
 
-                    $("<div></div>").addClass('drag').attr('data-id', ui.draggable.data('id')).attr('data-cpfc', ui.draggable.data('cpfc')).text( ui.draggable.text()).appendTo( $drop );
+                    $("<div></div>").addClass('drag').attr('data-itemid', ui.draggable.data('itemid')).attr('data-objetid', ui.draggable.data('objetid')).attr('data-cpfc', ui.draggable.data('cpfc')).text( ui.draggable.text()).appendTo( $drop );
                     ui.draggable.remove();
                 }
             };
@@ -317,7 +486,7 @@
                         accept: "#panel .drag",
                         hoverClass: 'over',
                         drop: function( event, ui ) {
-                            $("<div></div>").addClass('draggable').text( ui.draggable.text() ).attr('data-id', ui.draggable.data('id')).attr('data-cpfc', ui.draggable.data('cpfc')).draggable(dragOptions).appendTo(  $list.find('.panel-body') );
+                            $("<div></div>").addClass('draggable').text( ui.draggable.text() ).attr('data-objetid', ui.draggable.data('objetid')).attr('data-cpfc', ui.draggable.data('cpfc')).attr('data-itemid',  ui.draggable.data('itemid')).draggable(dragOptions).appendTo(  $list.find('.panel-body') );
                             ui.draggable.remove();
 
                         }
@@ -325,6 +494,41 @@
 
             {/literal}
 
+			 
+			 $('.btn-action-edit').click(function(){
+				 
+				 $('#sousmenuiditem').val($(this).data('itemid'));
+				 
+				 $.ajax({
+				 url      : "{url path="/admin/modules/menu/load/item"}",
+				 data     : { 'item_id': $(this).data('itemid') },
+				 type     : 'post',
+				 dataType : 'json',
+				 success  : function(retour) {
+					 console.log(retour);
+					 
+					 $('#md_item_id').val(retour.item_id);
+					 $('#dmtitre').val(retour.title);
+					 $('#dmchapo').val(retour.chapo);
+					 $('#dmurl').val(retour.url);
+					 $('#dmclass').val(retour.cssclass);
+					 $('#dmicone').val(retour.icone);
+					 if(retour.target){
+						 $('#dmtb').prop('checked', true);
+					 }else{
+						 $('#dmtb').prop('checked', false);
+					 }
+					 if(retour.sousmenu){
+						 $('#dmsm').prop('checked', true);
+					 }else{
+						 $('#dmsm').prop('checked', false);
+					 }
+					
+				 }});
+			 });
+			 $('.btn-action-delete').click(function(){
+				$('#menu_item_delete_id').val($(this).data('itemid'));
+			 });
         });
 
     </script>
@@ -334,4 +538,3 @@
 {block name="javascript-last-call"}
 
 {/block}
-
