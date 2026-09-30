@@ -3,41 +3,26 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://thelia.net/schema/dic/module http://thelia.net/schema/dic/module/module-2_2.xsd">
     <fullnamespace>Menu\Menu</fullnamespace>
-    <descriptive locale="en_US">
-        <title>Menu</title>
-        <!--
-        <subtitle></subtitle>
-        <description></description>
-        <postscriptum></postscriptum>
-        -->
-    </descriptive>
     <descriptive locale="fr_FR">
-        <title>Menu</title>
+        <title>Menus</title>
+        <subtitle>Menus personnalisés et hiérarchiques</subtitle>
+        <description>Compose des menus avec catégories, produits, dossiers, contenus, marques, pages ou liens libres.</description>
     </descriptive>
-    <!-- <logo></logo> -->
-    <!--<images-folder>images</images-folder>-->
+    <descriptive locale="en_US">
+        <title>Menus</title>
+        <subtitle>Custom hierarchical menus</subtitle>
+        <description>Build menus from categories, products, folders, contents, brands, pages or custom links.</description>
+    </descriptive>
     <languages>
-        <language>en_US</language>
         <language>fr_FR</language>
+        <language>en_US</language>
     </languages>
-    <version>2.0.0</version>
-    <authors>
-        <author>
-            <name>Chevrier Anthony</name>
-            <email>anthony@meedle.fr</email>
-        </author>
-    </authors>
+    <version>3.1.1</version>
+    <author>
+        <name>Anthony Chevrier</name>
+        <email>anthony@meedle.fr</email>
+    </author>
     <type>classic</type>
-    <!--
-    module dependencies
-    <required>
-        <module version="&gt;=0.1">Front</module>
-        <module version="~1.0">HookCart</module>
-        <module version="&gt;0.2">HookSearch</module>
-    </required>
-    -->
-    <thelia>2.4.0</thelia>
-    <stability>other</stability>
-    <mandatory>0</mandatory>
-    <hidden>0</hidden>
+    <thelia>3.0.0</thelia>
+    <stability>prod</stability>
 </module>

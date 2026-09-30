@@ -1,0 +1,354 @@
+{% extends '@BackOfficeDefaultTwig/base.html.twig' %}
+{% form_theme menu_form with bo_form_themes only %}
+{% form_theme item_form with bo_form_themes only %}
+
+{% macro tree(nodes, menu_id) %}
+    {% import _self as ui %}
+    <ul class="menu-tree list-unstyled mb-0" role="list">
+        {% for item in nodes %}
+            <li class="menu-tree-item" data-item-id="{{ item.id }}">
+                <div class="card border-0 shadow-sm mb-2 {{ not item.visible ? 'opacity-50' : '' }}">
+                    <div class="card-body py-2 px-3 d-flex align-items-center gap-3">
+                        <span class="menu-tree-grip text-muted" aria-hidden="true"><i class="bi bi-grip-vertical"></i></span>
+                        <span class="menu-tree-icon rounded text-bg-light" aria-hidden="true">
+                            <i class="{{ item.icon ?: ({category: 'bi bi-diagram-3', product: 'bi bi-box-seam', folder: 'bi bi-folder2-open', content: 'bi bi-file-text', brand: 'bi bi-award', page: 'bi bi-layout-text-window', custom: 'bi bi-link-45deg'}[item.type]|default('bi bi-link-45deg')) }}"></i>
+                        </span>
+                        <div class="min-w-0 flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <strong class="text-truncate">{{ item.title }}</strong>
+                                <span class="badge text-bg-light border">{{ item.type_label }}</span>
+                                {% if not item.visible %}<span class="badge text-bg-secondary">Masqué</span>{% endif %}
+                                {% if item.missing %}<span class="badge text-bg-warning">Destination manquante</span>{% endif %}
+                            </div>
+                            <div class="small text-muted text-truncate">{{ item.url ?: 'Aucune URL' }}</div>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Déplacer {{ item.title }}">
+                            {% for direction, icon in {up: 'bi-arrow-up', down: 'bi-arrow-down', outdent: 'bi-text-indent-right', indent: 'bi-text-indent-left'} %}
+                                <form method="post" action="{{ path('menu_admin_item_move', {menuId: menu_id, id: item.id, direction: direction}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('move-item-' ~ item.id) }}">
+                                    <button class="btn btn-outline-secondary" type="submit" title="{{ {up: 'Monter', down: 'Descendre', outdent: 'Remonter d’un niveau', indent: 'Passer sous l’élément précédent'}[direction] }}">
+                                        <i class="bi {{ icon }}"></i><span class="visually-hidden">{{ direction }}</span>
+                                    </button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                        <a class="btn btn-sm btn-outline-primary" href="{{ path('menu_admin_index', {menu: menu_id, edit_item: item.id}) }}" title="Modifier"><i class="bi bi-pencil"></i></a>
+                        <form method="post" action="{{ path('menu_admin_item_delete', {menuId: menu_id, id: item.id}) }}" class="d-inline" data-confirm="Supprimer cet élément et tous ses sous-éléments ?">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-item-' ~ item.id) }}">
+                            <button class="btn btn-sm btn-outline-danger" type="submit" title="Supprimer"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+                {% if item.children %}{{ ui.tree(item.children, menu_id) }}{% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% import _self as ui %}
+
+{% block title %}Menus{% endblock %}
+{% block body_testid %}menu-admin-page{% endblock %}
+
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('admin.home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Menus</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid menu-admin">
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Menus</h1>
+            <p class="text-muted mb-0">Composez vos navigations et organisez librement leurs niveaux.</p>
+        </div>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#menu-modal"><i class="bi bi-plus-lg"></i> Nouveau menu</button>
+    </div>
+
+    {% for message in app.flashes('success') %}<div class="alert alert-success alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
+    {% for message in app.flashes('danger') %}<div class="alert alert-danger alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
+
+    <div class="row g-4">
+        <aside class="col-xl-3 col-lg-4">
+            <div class="card position-sticky menu-sidebar">
+                <div class="card-header d-flex align-items-center justify-content-between"><h2 class="h6 mb-0">Vos menus</h2><span class="badge text-bg-secondary">{{ menus|length }}</span></div>
+                <div class="list-group list-group-flush">
+                    {% for menu in menus %}
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ selected_menu and selected_menu.id == menu.id ? 'active' : '' }}" href="{{ path('menu_admin_index', {menu: menu.id}) }}">
+                            <span class="text-truncate"><i class="bi bi-list-nested me-2"></i>{{ menu.title }}</span>
+                            <span class="badge {{ selected_menu and selected_menu.id == menu.id ? 'text-bg-light' : 'text-bg-secondary' }}">{{ menu.count }}</span>
+                        </a>
+                    {% else %}
+                        <div class="p-4 text-center text-muted"><i class="bi bi-list-ul fs-2 d-block mb-2"></i>Aucun menu</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+
+        <main class="col-xl-9 col-lg-8">
+            {% if selected_menu %}
+                <div class="card mb-4">
+                    <div class="card-body d-flex justify-content-between align-items-start gap-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2"><h2 class="h4 mb-1">{{ selected_menu.title }}</h2><span class="badge {{ selected_menu.visible ? 'text-bg-success' : 'text-bg-secondary' }}">{{ selected_menu.visible ? 'Actif' : 'Inactif' }}</span></div>
+                            {% if selected_menu.description %}<p class="text-muted mb-0">{{ selected_menu.description }}</p>{% endif %}
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-outline-secondary" href="{{ path('menu_admin_index', {menu: selected_menu.id, edit_menu: selected_menu.id}) }}"><i class="bi bi-pencil"></i> Modifier</a>
+                            <form method="post" action="{{ path('menu_admin_delete', {id: selected_menu.id}) }}" data-confirm="Supprimer ce menu et tous ses éléments ?">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-menu-' ~ selected_menu.id) }}">
+                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div><h2 class="h5 mb-1">Structure</h2><p class="small text-muted mb-0">Utilisez les flèches pour ordonner, indenter ou remonter chaque élément.</p></div>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#item-modal"><i class="bi bi-plus-lg"></i> Ajouter un élément</button>
+                </div>
+
+                {% if menu_tree %}
+                    {{ ui.tree(menu_tree, selected_menu.id) }}
+                {% else %}
+                    <div class="card border-dashed"><div class="card-body text-center py-5 text-muted"><i class="bi bi-node-plus fs-1 d-block mb-2"></i><h3 class="h6">Ce menu est vide</h3><p class="mb-3">Ajoutez sa première entrée : page, catégorie, produit, marque ou lien libre.</p><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#item-modal">Ajouter un élément</button></div></div>
+                {% endif %}
+            {% else %}
+                <div class="card"><div class="card-body text-center py-5"><i class="bi bi-list-nested fs-1 text-muted"></i><h2 class="h5 mt-3">Créez votre premier menu</h2><button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#menu-modal">Nouveau menu</button></div></div>
+            {% endif %}
+        </main>
+    </div>
+
+    <div class="modal fade" id="menu-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            {% set menu_action = editing_menu ? path('menu_admin_update', {id: editing_menu.id}) : path('menu_admin_create') %}
+            {{ form_start(menu_form, {action: menu_action, method: 'POST', attr: {class: 'modal-content'}}) }}
+                <div class="modal-header"><h2 class="modal-title fs-5">{{ editing_menu ? 'Modifier le menu' : 'Nouveau menu' }}</h2><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    {{ form_errors(menu_form) }}
+                    {{ form_row(menu_form.title) }}
+                    {{ form_row(menu_form.description) }}
+                    {{ form_row(menu_form.visible) }}
+                    {{ form_widget(menu_form.success_url, {value: editing_menu ? path('menu_admin_index', {menu: editing_menu.id}) : path('menu_admin_index')}) }}
+                    {{ form_widget(menu_form.error_url, {value: editing_menu ? path('menu_admin_index', {menu: editing_menu.id, edit_menu: editing_menu.id}) : path('menu_admin_index')}) }}
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button><button class="btn btn-primary" type="submit">Enregistrer</button></div>
+            {{ form_end(menu_form) }}
+        </div>
+    </div>
+
+    {% if selected_menu %}
+    <div class="modal fade" id="item-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            {% set item_action = editing_item ? path('menu_admin_item_update', {menuId: selected_menu.id, id: editing_item.id}) : path('menu_admin_item_create', {menuId: selected_menu.id}) %}
+            {{ form_start(item_form, {action: item_action, method: 'POST', attr: {class: 'modal-content'}}) }}
+                <div class="modal-header"><h2 class="modal-title fs-5">{{ editing_item ? 'Modifier l’élément' : 'Ajouter un élément' }}</h2><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    {{ form_errors(item_form) }}
+                    {{ form_widget(item_form.target) }}
+                    <div class="mb-4 destination-picker" data-browser-url="{{ path('menu_admin_destinations') }}">
+                        <label class="form-label">Destination</label>
+                        <div class="destination-selection border rounded p-3 mb-2 d-flex align-items-center justify-content-between gap-3">
+                            <div class="min-w-0"><small class="text-muted d-block">Destination choisie</small><strong class="text-truncate d-block" data-selected-target-label>{{ selected_target_label }}</strong></div>
+                            <span class="badge text-bg-primary" data-selected-target-value>{{ selected_target }}</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 align-items-end">
+                            {% if quick_targets.available %}
+                                <div class="flex-grow-1">
+                                    <label class="form-label small" for="destination-quick-select">Sélection rapide</label>
+                                    <select class="form-select" id="destination-quick-select">
+                                        {% for group, choices in quick_targets.groups %}
+                                            <optgroup label="{{ group }}">
+                                                {% for label, value in choices %}<option value="{{ value }}" {{ selected_target == value ? 'selected' : '' }}>{{ label }}</option>{% endfor %}
+                                            </optgroup>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info py-2 mb-0 flex-grow-1"><i class="bi bi-info-circle"></i> {{ quick_targets.count }} éléments : utilisez l’explorateur ou la recherche pour éviter une liste trop longue.</div>
+                            {% endif %}
+                            <button class="btn btn-outline-primary" type="button" data-browser-toggle><i class="bi bi-folder2-open"></i> Parcourir le site</button>
+                        </div>
+                        <div class="destination-browser border rounded p-3 mt-3 d-none" data-browser-panel>
+                            <div class="d-flex flex-wrap gap-2 mb-3" role="group" aria-label="Type de contenu à parcourir">
+                                <button type="button" class="btn btn-sm btn-primary" data-browser-section="catalog"><i class="bi bi-shop"></i> Catalogue</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-browser-section="folder"><i class="bi bi-folder"></i> Dossiers</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-browser-section="brand"><i class="bi bi-award"></i> Marques</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-browser-section="page"><i class="bi bi-layout-text-window"></i> Pages</button>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input class="form-control" type="search" data-browser-search placeholder="Rechercher dans le catalogue…" autocomplete="off">
+                                <button class="btn btn-outline-secondary" type="button" data-browser-search-clear title="Effacer la recherche"><i class="bi bi-x-lg"></i></button>
+                            </div>
+                            <nav class="small mb-2" aria-label="Fil d’Ariane"><ol class="breadcrumb mb-0" data-browser-breadcrumbs></ol></nav>
+                            <div class="text-center text-muted py-4 d-none" data-browser-loading><span class="spinner-border spinner-border-sm me-2"></span>Chargement…</div>
+                            <div class="list-group destination-results" data-browser-results></div>
+                            <div class="alert alert-warning py-2 mt-2 mb-0 d-none" data-browser-limited>Les 100 premiers résultats sont affichés. Affinez la recherche pour trouver un autre élément.</div>
+                        </div>
+                        <div class="form-text">Parcourez un dossier, une catégorie ou une page sans la sélectionner, puis choisissez précisément l’élément de destination.</div>
+                    </div>
+                    {{ form_widget(item_form.parent_id) }}
+                    <div class="mb-3">
+                        <label class="form-label" for="menu-parent-picker">Élément parent</label>
+                        <select class="form-select" id="menu-parent-picker">
+                            <option value="0">Niveau principal</option>
+                            {% for parent in parent_choices %}<option value="{{ parent.id }}" {{ item_form.parent_id.vars.value == parent.id ? 'selected' : '' }}>{{ parent.depth > 0 ? '↳ ' : '' }}{{ parent.title }}</option>{% endfor %}
+                        </select>
+                        <div class="form-text">Choisissez un parent pour créer un sous-item.</div>
+                    </div>
+                    <div class="row"><div class="col-md-6">{{ form_row(item_form.title) }}</div><div class="col-md-6">{{ form_row(item_form.url) }}</div></div>
+                    {{ form_row(item_form.chapo) }}
+                    <div class="row"><div class="col-md-6">{{ form_row(item_form.icon) }}</div><div class="col-md-6">{{ form_row(item_form.css_class) }}</div></div>
+                    <div class="row"><div class="col-md-6">{{ form_row(item_form.visible) }}</div><div class="col-md-6">{{ form_row(item_form.target_blank) }}</div></div>
+                    {{ form_widget(item_form.success_url, {value: path('menu_admin_index', {menu: selected_menu.id})}) }}
+                    {{ form_widget(item_form.error_url, {value: editing_item ? path('menu_admin_index', {menu: selected_menu.id, edit_item: editing_item.id}) : path('menu_admin_index', {menu: selected_menu.id})}) }}
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button><button class="btn btn-primary" type="submit">Enregistrer</button></div>
+            {{ form_end(item_form) }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.menu-sidebar{top:1rem}.menu-tree .menu-tree{margin-left:2.5rem;position:relative}.menu-tree .menu-tree:before{content:"";position:absolute;left:-1.25rem;top:0;bottom:1rem;border-left:2px solid var(--bs-border-color)}.menu-tree-item{position:relative}.menu-tree .menu-tree>.menu-tree-item:before{content:"";position:absolute;left:-1.25rem;top:1.65rem;width:1.25rem;border-top:2px solid var(--bs-border-color)}.menu-tree-icon{display:grid;place-items:center;width:2.25rem;height:2.25rem;flex:0 0 auto}.menu-tree-grip{font-size:1.2rem}.min-w-0{min-width:0}.border-dashed{border-style:dashed!important}.destination-selection{background:var(--bs-tertiary-bg)}.destination-results{max-height:22rem;overflow:auto}.destination-result-icon{width:2rem;height:2rem;display:grid;place-items:center;flex:0 0 auto}@media(max-width:767.98px){.menu-tree .menu-tree{margin-left:1rem}.menu-tree .btn-group{display:none}.menu-tree-icon{display:none}}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-confirm]').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!window.confirm(form.dataset.confirm)) event.preventDefault();
+        });
+    });
+    var picker = document.getElementById('menu-parent-picker');
+    var parentInput = document.getElementById('{{ item_form.parent_id.vars.id }}');
+    if (picker && parentInput) picker.addEventListener('change', function () { parentInput.value = picker.value; });
+
+    var destination = document.querySelector('.destination-picker');
+    if (destination) {
+        var targetInput = document.getElementById('{{ item_form.target.vars.id }}');
+        var targetLabel = destination.querySelector('[data-selected-target-label]');
+        var targetValue = destination.querySelector('[data-selected-target-value]');
+        var quickSelect = document.getElementById('destination-quick-select');
+        var panel = destination.querySelector('[data-browser-panel]');
+        var results = destination.querySelector('[data-browser-results]');
+        var breadcrumbs = destination.querySelector('[data-browser-breadcrumbs]');
+        var loading = destination.querySelector('[data-browser-loading]');
+        var limited = destination.querySelector('[data-browser-limited]');
+        var search = destination.querySelector('[data-browser-search]');
+        var section = 'catalog';
+        var parent = 0;
+        var searchTimer;
+
+        function chooseTarget(value, label) {
+            targetInput.value = value;
+            targetLabel.textContent = label;
+            targetValue.textContent = value;
+            if (quickSelect) {
+                var exists = Array.from(quickSelect.options).some(function (option) { return option.value === value; });
+                if (exists) quickSelect.value = value;
+            }
+        }
+
+        function element(tag, className, text) {
+            var node = document.createElement(tag);
+            if (className) node.className = className;
+            if (text !== undefined) node.textContent = text;
+            return node;
+        }
+
+        function render(data) {
+            results.replaceChildren();
+            breadcrumbs.replaceChildren();
+            data.breadcrumbs.forEach(function (crumb, index) {
+                var li = element('li', 'breadcrumb-item' + (index === data.breadcrumbs.length - 1 ? ' active' : ''));
+                if (index === data.breadcrumbs.length - 1) {
+                    li.textContent = crumb.title;
+                } else {
+                    var link = element('button', 'btn btn-link btn-sm p-0', crumb.title);
+                    link.type = 'button';
+                    link.addEventListener('click', function () { parent = crumb.parent; search.value = ''; load(); });
+                    li.appendChild(link);
+                }
+                breadcrumbs.appendChild(li);
+            });
+            if (!data.items.length) {
+                results.appendChild(element('div', 'text-center text-muted py-4', 'Aucun élément trouvé.'));
+            }
+            data.items.forEach(function (item) {
+                var row = element('div', 'list-group-item d-flex align-items-center gap-3');
+                var icon = element('span', 'destination-result-icon rounded text-bg-light');
+                icon.appendChild(element('i', ({category:'bi bi-diagram-3',product:'bi bi-box-seam',folder:'bi bi-folder2-open',content:'bi bi-file-text',brand:'bi bi-award',page:'bi bi-layout-text-window'}[item.kind] || 'bi bi-link-45deg')));
+                var body = element('div', 'min-w-0 flex-grow-1');
+                body.appendChild(element('strong', 'd-block text-truncate', item.title));
+                body.appendChild(element('small', 'text-muted', item.kind_label + (item.reference ? ' · ' + item.reference : '')));
+                var actions = element('div', 'd-flex gap-2');
+                if (item.has_children) {
+                    var browse = element('button', 'btn btn-sm btn-outline-secondary', 'Parcourir');
+                    browse.type = 'button';
+                    browse.addEventListener('click', function () { parent = item.browse_parent; search.value = ''; load(); });
+                    actions.appendChild(browse);
+                }
+                var choose = element('button', 'btn btn-sm btn-primary', 'Choisir');
+                choose.type = 'button';
+                choose.addEventListener('click', function () { chooseTarget(item.target, item.kind_label + ' · ' + item.title); });
+                actions.appendChild(choose);
+                row.append(icon, body, actions);
+                results.appendChild(row);
+            });
+            limited.classList.toggle('d-none', !data.limited);
+        }
+
+        async function load() {
+            loading.classList.remove('d-none');
+            results.classList.add('opacity-50');
+            var url = new URL(destination.dataset.browserUrl, window.location.origin);
+            url.searchParams.set('section', section);
+            url.searchParams.set('parent', parent);
+            url.searchParams.set('q', search.value.trim());
+            try {
+                var response = await fetch(url, {headers: {'Accept': 'application/json'}});
+                if (!response.ok) throw new Error('Impossible de charger les destinations.');
+                render(await response.json());
+            } catch (error) {
+                results.replaceChildren(element('div', 'alert alert-danger mb-0', error.message));
+            } finally {
+                loading.classList.add('d-none');
+                results.classList.remove('opacity-50');
+            }
+        }
+
+        destination.querySelector('[data-browser-toggle]').addEventListener('click', function () {
+            panel.classList.toggle('d-none');
+            if (!panel.classList.contains('d-none')) load();
+        });
+        destination.querySelectorAll('[data-browser-section]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                section = button.dataset.browserSection;
+                parent = 0;
+                search.value = '';
+                destination.querySelectorAll('[data-browser-section]').forEach(function (candidate) {
+                    candidate.classList.toggle('btn-primary', candidate === button);
+                    candidate.classList.toggle('btn-outline-secondary', candidate !== button);
+                });
+                search.placeholder = 'Rechercher dans ' + ({catalog:'le catalogue',folder:'les dossiers et contenus',brand:'les marques',page:'les pages'}[section] || 'le site') + '…';
+                load();
+            });
+        });
+        search.addEventListener('input', function () {
+            window.clearTimeout(searchTimer);
+            searchTimer = window.setTimeout(function () { parent = 0; load(); }, 300);
+        });
+        destination.querySelector('[data-browser-search-clear]').addEventListener('click', function () { search.value = ''; parent = 0; load(); search.focus(); });
+        if (quickSelect) quickSelect.addEventListener('change', function () { chooseTarget(quickSelect.value, quickSelect.options[quickSelect.selectedIndex].text); });
+    }
+    {% if editing_menu %}new bootstrap.Modal(document.getElementById('menu-modal')).show();{% endif %}
+    {% if editing_item %}new bootstrap.Modal(document.getElementById('item-modal')).show();{% endif %}
+});
+</script>
+{% endblock %}
